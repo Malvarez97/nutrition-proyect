@@ -1,50 +1,95 @@
-.admin-patient-detail .detail-header { margin-bottom: 1.25rem; }
-.admin-patient-detail .back-link { display: block; color: var(--color-teal); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.25rem; }
-.admin-patient-detail .admin-week-range { width: 100%; margin-top: 0.5rem; accent-color: var(--color-teal); }
-.admin-patient-detail .panel-photo-empty { width: 140px; aspect-ratio: 3/4; background: var(--color-bg); border: 2px dashed var(--color-border); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: var(--color-text-secondary); }
-.admin-patient-detail .admin-weight-only .weight-value { font-weight: 600; font-size: 1.125rem; color: var(--color-teal); }
-.admin-patient-detail .meal-item-readonly { cursor: default; }
-.admin-patient-detail .detail-section { padding: 1.25rem; background: var(--color-bg-card); border-radius: 16px; border: 1px solid var(--color-border); margin-bottom: 1.25rem; }
-.admin-patient-detail .detail-section h2 { margin: 0 0 1rem; font-size: 1rem; color: var(--color-teal); }
-.admin-patient-detail .admin-week-selector { margin-bottom: 1.5rem; }
-.admin-patient-detail .week-slider { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-.admin-patient-detail .week-slider-btn { width: 44px; height: 44px; padding: 0; border: 2px solid var(--color-teal); border-radius: 12px; background: var(--color-bg-card); color: var(--color-teal); cursor: pointer; }
-.admin-patient-detail .week-slider-btn:hover:not(:disabled) { background: var(--color-teal); color: white; }
-.admin-patient-detail .week-slider-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.admin-patient-detail .week-slider-label { font-weight: 600; color: var(--color-teal); min-width: 180px; text-align: center; }
-.admin-patient-detail .week-range-slider { width: 100%; margin-top: 0.5rem; accent-color: var(--color-teal); }
-
-.admin-patient-detail .admin-week-data-row { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 1.5rem; }
-.admin-patient-detail .admin-week-photos h3, .admin-patient-detail .admin-week-measures h3,
-.admin-patient-detail .admin-week-meals h3, .admin-patient-detail .admin-week-feedback h3 {
-  margin: 0 0 0.75rem; font-size: 0.9rem; color: var(--color-teal);
+.admin-patient-detail .detail-header {
+  margin-bottom: var(--space-5);
 }
-.admin-patient-detail .week-photos-box { display: flex; gap: 1rem; }
-.admin-patient-detail .week-photo-btn { position: relative; padding: 0; border: none; background: none; cursor: pointer; border-radius: 10px; overflow: hidden; }
-.admin-patient-detail .week-photo-btn img { width: 140px; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; display: block; }
-.admin-patient-detail .week-photo-zoom { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); opacity: 0.6; font-size: 1.75rem; transition: opacity 0.2s; }
-.admin-patient-detail .week-photo-btn:hover .week-photo-zoom { opacity: 1; }
-.admin-patient-detail .photo-placeholder { width: 140px; aspect-ratio: 3/4; background: var(--color-border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--color-text-secondary); }
-.admin-patient-detail .week-weight { font-weight: 600; color: var(--color-teal); font-size: 1rem; margin-top: 0.5rem; }
 
-.admin-patient-detail .admin-week-measures .week-measures-box { padding: 0.5rem 0; }
-.admin-patient-detail .admin-week-meals { padding-top: 1.25rem; border-top: 1px solid var(--color-border); }
-.admin-patient-detail .admin-week-feedback { padding-top: 1.25rem; border-top: 1px solid var(--color-border); }
-.admin-patient-detail .feedback-card-inline { margin-bottom: 0.75rem; }
-.admin-patient-detail .btn-feedback { padding: 0.5rem 1rem; background: var(--color-teal); color: white; border: none; border-radius: 12px; cursor: pointer; }
-.admin-patient-detail .btn-feedback-edit { margin-top: 0.5rem; background: var(--color-bg); color: var(--color-teal); border: 1px solid var(--color-teal); }
+.admin-patient-detail .back-link {
+  display: block;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: var(--space-1);
+}
 
-.admin-patient-detail .feedbacks-list .feedback-card-full { margin-bottom: 1rem; }
-.admin-patient-detail .feedback-card-full p { margin: 0.25rem 0; font-size: 0.9rem; }
-.admin-patient-detail .feedback-date { font-weight: 600; margin-bottom: 0.5rem; color: var(--color-teal); }
-.admin-patient-detail .user-response { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--color-border); }
+.admin-patient-detail .back-link:hover {
+  color: var(--color-accent-hover);
+}
 
-.admin-patient-detail .photo-preview-modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-.admin-patient-detail .photo-preview-modal-content { position: relative; max-width: 95vw; max-height: 95vh; background: var(--color-bg-card); border-radius: 16px; padding: 1.5rem; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-.admin-patient-detail .photo-preview-close { position: absolute; top: 0.5rem; right: 0.5rem; width: 36px; height: 36px; border: none; background: var(--color-bg); color: var(--color-text); font-size: 1.5rem; border-radius: 50%; cursor: pointer; }
-.admin-patient-detail .photo-preview-label { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 600; color: var(--color-teal); }
-.admin-patient-detail .photo-preview-img { max-width: 85vw; max-height: 80vh; object-fit: contain; border-radius: 8px; }
+.admin-patient-detail .admin-week-range {
+  width: 100%;
+  margin-top: var(--space-2);
+  accent-color: var(--color-accent);
+}
 
-.admin-patient-detail .body-measures-visual .measures-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-.admin-patient-detail .measure-field label { font-size: 0.8rem; color: var(--color-text-secondary); }
-.admin-patient-detail .measure-value { font-weight: 500; }
+.admin-patient-detail .panel-photo-empty {
+  width: 140px;
+  aspect-ratio: 3/4;
+  background: var(--color-bg-muted);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.admin-patient-detail .admin-weight-only .weight-value {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--color-accent);
+}
+
+.admin-patient-detail .meal-item-readonly {
+  cursor: default;
+}
+
+.admin-patient-detail .btn-feedback {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.admin-patient-detail .btn-feedback:hover {
+  background: var(--color-accent-hover);
+}
+
+.admin-patient-detail .btn-feedback-edit {
+  margin-top: var(--space-2);
+  background: transparent;
+  color: var(--color-accent);
+  border: 1.5px solid var(--color-accent);
+}
+
+.admin-patient-detail .btn-feedback-edit:hover {
+  background: var(--color-accent-muted);
+}
+
+.admin-patient-detail .feedbacks-list .feedback-card-full {
+  margin-bottom: var(--space-4);
+}
+
+.admin-patient-detail .user-response {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.admin-patient-detail .body-measures-visual .measures-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.admin-patient-detail .measure-field label {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.admin-patient-detail .measure-value {
+  font-weight: 500;
+}

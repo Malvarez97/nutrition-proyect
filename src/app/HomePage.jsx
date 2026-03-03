@@ -1,30 +1,45 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import './HomePage.css'
 
 export function HomePage() {
   const { isAuthenticated, profile } = useAuth()
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>
-        {isAuthenticated ? `Hola${profile?.name ? `, ${profile.name}` : ''}` : 'Ludimila Nutrición'}
-      </h1>
+    <div className="home">
       {isAuthenticated ? (
         <>
-          <p>Tu panel de nutrición.</p>
-          <Link to="/app" style={{ display: 'inline-block', margin: '0.5rem', padding: '0.6rem 1.2rem', background: '#007A8A', color: 'white', borderRadius: 12 }}>
-            Ir a la app
-          </Link>
-          {profile?.role === 'professional' && (
-            <Link to="/admin" style={{ display: 'inline-block', margin: '0.5rem', padding: '0.6rem 1.2rem', border: '1px solid #007A8A', color: '#007A8A', borderRadius: 12 }}>
-              Panel profesional
+          <div className="home-welcome">
+            <h1>
+              Hola{profile?.name ? `, ${profile.name}` : ''}
+            </h1>
+            <p>Tu panel de nutrición te espera.</p>
+          </div>
+          <div className="home-actions">
+            <Link to="/app" className="home-btn home-btn-primary">
+              Ir a la app
             </Link>
-          )}
+            {profile?.role === 'professional' && (
+              <Link to="/admin" className="home-btn home-btn-secondary">
+                Panel profesional
+              </Link>
+            )}
+          </div>
         </>
       ) : (
-        <Link to="/auth/login" style={{ display: 'inline-block', marginTop: '1rem', padding: '0.6rem 1.2rem', background: '#007A8A', color: 'white', borderRadius: 12 }}>
-          Iniciar sesión
-        </Link>
+        <>
+          <h1 className="home-brand">
+            Ludimila <span className="home-brand-accent">Nutrición</span>
+          </h1>
+          <p className="home-subtitle">
+            Seguimiento nutricional personalizado. Registra comidas, control semanal y feedback profesional.
+          </p>
+          <div className="home-actions">
+            <Link to="/auth/login" className="home-btn home-btn-primary">
+              Iniciar sesión
+            </Link>
+          </div>
+        </>
       )}
     </div>
   )

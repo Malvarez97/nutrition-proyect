@@ -1,0 +1,85 @@
+.home {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.home-brand {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.02em;
+}
+
+.home-brand-accent {
+  color: var(--color-accent);
+}
+
+.home-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  min-width: 160px;
+}
+
+.home-btn-primary {
+  background: var(--color-accent);
+  color: white;
+  border: none;
+}
+.home-btn-primary:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.home-btn-secondary {
+  background: transparent;
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+}
+.home-btn-secondary:hover {
+  background: var(--color-accent-muted);
+}
+
+.home-welcome {
+  margin-bottom: var(--space-4);
+}
+
+.home-welcome h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 var(--space-2);
+}
+
+.home-welcome p {
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-4);
+}

@@ -1,4 +1,4 @@
-# Proyecto Luu
+# nutrition-proyect
 
 Proyecto React con Vite, Supabase (Auth + Storage), React Router y protección de rutas.
 

@@ -17,6 +17,8 @@
   --color-accent-hover: #0F766E;
   --color-accent-muted: rgba(13, 148, 136, 0.08);
   --color-accent-border: rgba(13, 148, 136, 0.2);
+  /* Compatibilidad */
+  --color-teal: var(--color-accent);
 
   --color-border: #E7E5E4;
   --color-border-subtle: #F5F5F4;

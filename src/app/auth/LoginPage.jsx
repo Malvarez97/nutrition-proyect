@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import './LoginPage.css'
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
@@ -27,33 +28,42 @@ export function LoginPage() {
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: 400, margin: '0 auto' }}>
-      <h1>Iniciar sesión</h1>
-      <form onSubmit={handleSubmit}>
-        {error && <p style={{ color: '#dc2626' }}>{error}</p>}
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: '100%', padding: '0.6rem', marginBottom: '1rem' }}
-        />
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>Contraseña</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ width: '100%', padding: '0.6rem', marginBottom: '1rem' }}
-        />
-        <button type="submit" disabled={loading} style={{ padding: '0.6rem 1.2rem', background: '#007A8A', color: 'white', border: 'none', borderRadius: 12 }}>
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
-      </form>
-      <p style={{ marginTop: '1rem' }}>
-        <a href="/">Volver</a>
-      </p>
+    <div className="login">
+      <div className="login-card">
+        <h1 className="login-title">Iniciar sesión</h1>
+        <form onSubmit={handleSubmit} className="login-form">
+          {error && <div className="login-error">{error}</div>}
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-input"
+              placeholder="tu@email.com"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-input"
+              required
+            />
+          </div>
+          <button type="submit" disabled={loading} className="login-submit">
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </form>
+        <Link to="/" className="login-back">
+          Volver al inicio
+        </Link>
+      </div>
     </div>
   )
 }

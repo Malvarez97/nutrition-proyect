@@ -1,13 +1,8 @@
-/* MealEntryModal - mobile-first, full screen en móvil */
-:root {
-  --modal-teal: #007A8A;
-  --touch-min: 44px;
-}
-
+/* MealEntryModal - mobile-first */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -18,26 +13,26 @@
 @media (min-width: 640px) {
   .modal-overlay {
     align-items: center;
-    padding: 1rem;
+    padding: var(--space-6);
   }
 }
 
 .modal-content {
-  background: var(--color-bg-card, #fff);
+  background: var(--color-surface);
   width: 100%;
   max-height: 95vh;
-  border-radius: 20px 20px 0 0;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
 }
 
 @media (min-width: 640px) {
   .modal-content {
     max-width: 480px;
     max-height: 90vh;
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
   }
 }
 
@@ -45,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1rem;
+  padding: var(--space-5) var(--space-4);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
@@ -53,15 +48,16 @@
 .modal-header h2 {
   margin: 0;
   font-size: 1.1rem;
+  font-weight: 600;
   color: var(--color-text);
 }
 
 .modal-close {
-  min-width: var(--touch-min);
-  min-height: var(--touch-min);
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   border: none;
-  background: var(--color-bg);
+  background: var(--color-bg-muted);
   border-radius: 50%;
   font-size: 1.5rem;
   line-height: 1;
@@ -69,9 +65,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-text);
 }
 
-.modal-close:active {
+.modal-close:hover {
   background: var(--color-border);
 }
 
@@ -85,32 +82,32 @@
 .modal-content form > div:not(.modal-footer) {
   overflow-y: auto;
   flex: 1;
-  padding: 1rem;
+  padding: var(--space-4);
 }
 
 .modal-error {
-  padding: 0.75rem;
-  background: rgba(239, 68, 68, 0.1);
-  border-radius: 10px;
-  color: #dc2626;
-  margin-bottom: 1rem;
+  padding: var(--space-3);
+  background: var(--color-error-muted);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  margin-bottom: var(--space-4);
 }
 
 .modal-section {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--space-5);
 }
 
 .modal-section label {
   display: block;
   font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-weight: 500;
+  margin-bottom: var(--space-2);
   color: var(--color-text);
 }
 
 .food-list {
   list-style: none;
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-4);
   padding: 0;
 }
 
@@ -118,58 +115,60 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem;
-  background: #f8fbfc;
-  border-radius: 10px;
-  margin-bottom: 0.5rem;
+  padding: var(--space-3);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-2);
 }
 
 .food-list li button {
-  min-width: var(--touch-min);
-  min-height: var(--touch-min);
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   border: none;
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-  border-radius: 8px;
+  background: var(--color-error-muted);
+  color: var(--color-error);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 1.25rem;
 }
 
-/* Add food row - stack en móvil */
 .add-food-row {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
 .add-food-row select,
 .add-food-row input {
   width: 100%;
-  min-height: var(--touch-min);
-  padding: 0.75rem 1rem;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 1rem;
+  background: var(--color-surface);
 }
 
-.add-food-row select {
-  cursor: pointer;
+.add-food-row select:focus,
+.add-food-row input:focus {
+  outline: none;
+  border-color: var(--color-accent);
 }
 
 .add-food-row button[type="button"] {
-  min-height: var(--touch-min);
-  padding: 0 1.5rem;
-  background: var(--modal-teal);
+  min-height: 44px;
+  padding: 0 var(--space-6);
+  background: var(--color-accent);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
 }
 
-.add-food-row button[type="button"]:active {
-  opacity: 0.9;
+.add-food-row button[type="button"]:hover {
+  background: var(--color-accent-hover);
 }
 
 @media (min-width: 480px) {
@@ -178,21 +177,20 @@
     flex-wrap: wrap;
     align-items: center;
   }
-
   .add-food-row input[type="number"] {
     width: 90px;
   }
 }
 
-/* Emoción y nota */
 .modal-section select,
 .modal-section textarea {
   width: 100%;
-  min-height: var(--touch-min);
-  padding: 0.75rem 1rem;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 1rem;
+  background: var(--color-surface);
 }
 
 .modal-section textarea {
@@ -200,32 +198,32 @@
   resize: vertical;
 }
 
-/* Footer */
 .modal-footer {
   display: flex;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: var(--space-3);
+  padding: var(--space-4);
   border-top: 1px solid var(--color-border);
   flex-shrink: 0;
-  background: var(--color-bg-card);
+  background: var(--color-surface);
 }
 
 .modal-footer button {
   flex: 1;
-  min-height: var(--touch-min);
-  padding: 0 1rem;
-  border-radius: 12px;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
 }
 
 .modal-footer button[type="button"]:first-child {
-  background: var(--color-bg);
+  background: var(--color-bg-muted);
   border: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
 .modal-footer button[type="submit"] {
-  background: var(--modal-teal);
+  background: var(--color-accent);
   color: white;
   border: none;
 }

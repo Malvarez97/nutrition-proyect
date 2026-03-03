@@ -47,7 +47,7 @@ export function FeedbackModal({ userId, weekDate, feedback, onClose, onSaved }) 
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay feedback-modal-overlay" onClick={onClose}>
       <div className="modal-content feedback-modal" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
           <h2>{isEdit ? 'Editar feedback' : 'Nuevo feedback'}</h2>

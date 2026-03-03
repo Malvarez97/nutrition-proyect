@@ -1,13 +1,13 @@
-.meals-by-week-day .week-block { margin-bottom: 1.5rem; }
-.meals-by-week-day .week-title { font-size: 0.9rem; color: var(--color-teal); margin-bottom: 0.75rem; }
+.meals-by-week-day .week-block { margin-bottom: var(--space-6); }
+.meals-by-week-day .week-title { font-size: 0.9rem; color: var(--color-accent); margin-bottom: var(--space-3); }
 .week-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
 @media (max-width: 900px) { .week-days-grid { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 600px) { .week-days-grid { grid-template-columns: repeat(2, 1fr); } }
-.day-column { background: var(--color-bg); border-radius: 10px; padding: 0.5rem; border: 1px solid var(--color-border); }
+.day-column { background: var(--color-bg-muted); border-radius: var(--radius-md); padding: var(--space-2); border: 1px solid var(--color-border); }
 .day-header { font-weight: 600; font-size: 0.8rem; margin-bottom: 0.5rem; }
-.meal-entry-card { padding: 0.5rem; margin-bottom: 0.5rem; background: #f8fbfc; border-radius: 8px; font-size: 0.85rem; }
+.meal-entry-card { padding: var(--space-2); margin-bottom: var(--space-2); background: var(--color-surface); border-radius: var(--radius-sm); font-size: 0.85rem; border: 1px solid var(--color-border); }
 .meal-entry-header { display: flex; gap: 0.5rem; margin-bottom: 0.25rem; }
-.meal-type { font-weight: 600; color: var(--color-teal); }
+.meal-type { font-weight: 600; color: var(--color-accent); }
 .meal-emotion { font-size: 0.75rem; color: var(--color-text-secondary); }
 .meal-food-item { font-size: 0.8rem; }
 .meal-note { margin: 0.25rem 0 0; font-size: 0.8rem; color: var(--color-text-secondary); }

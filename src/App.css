@@ -1,14 +1,30 @@
-/* Estilos globales de la app */
+/* Snackbar - notificaciones toast */
 .snackbar {
   position: fixed;
-  bottom: 1.5rem;
+  bottom: var(--space-6);
   left: 50%;
   transform: translateX(-50%);
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
   font-weight: 500;
+  font-size: 0.9rem;
   z-index: 9999;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-lg);
+  max-width: calc(100vw - var(--space-8));
+  animation: snackbar-in 0.2s ease;
 }
-.snackbar-success { background: #059669; color: white; }
-.snackbar-error { background: #dc2626; color: white; }
+
+@keyframes snackbar-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.snackbar-success {
+  background: var(--color-success);
+  color: white;
+}
+
+.snackbar-error {
+  background: var(--color-error);
+  color: white;
+}

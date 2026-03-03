@@ -1,21 +1,34 @@
 .admin-loading,
 .admin-empty {
-  padding: 2rem;
+  padding: var(--space-8);
   text-align: center;
+  color: var(--color-text-secondary);
 }
 
 .admin-empty h2 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text);
 }
 
 .admin-empty .btn-primary {
   display: inline-block;
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  background: #007A8A;
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-accent);
   color: white;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   text-decoration: none;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.admin-empty .btn-primary:hover {
+  background: var(--color-accent-hover);
+}
+
+.admin-patients {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .admin-page-header {
@@ -23,16 +36,42 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .admin-page-header h1 {
   margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sort-control label {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.sort-control select {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  background: var(--color-surface);
 }
 
 .patients-table-wrap {
   overflow-x: auto;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .patients-table {
@@ -42,28 +81,91 @@
 
 .patients-table th,
 .patients-table td {
-  padding: 0.75rem;
+  padding: var(--space-4);
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.patients-table th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-muted);
+}
+
+.patients-table tbody tr:hover {
+  background: var(--color-surface-hover);
+}
+
+.patients-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .patient-link {
   font-weight: 600;
-  color: #007A8A;
+  color: var(--color-accent);
 }
 
-.compliance-activo { color: #059669; }
-.compliance-regular { color: #d97706; }
-.compliance-bajo { color: #dc2626; }
+.patient-link:hover {
+  color: var(--color-accent-hover);
+}
 
-.notes-preview { cursor: pointer; }
+.compliance-activo {
+  color: var(--color-success);
+}
+
+.compliance-regular {
+  color: var(--color-warning);
+}
+
+.compliance-bajo {
+  color: var(--color-error);
+}
+
+.notes-preview {
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .notes-edit textarea {
   width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
+  padding: var(--space-2);
+  margin-bottom: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+}
+
+.notes-edit button {
+  padding: var(--space-2) var(--space-3);
+  margin-right: var(--space-2);
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.notes-edit button:first-of-type {
+  background: var(--color-accent);
+  color: white;
+  border: none;
+}
+
+.notes-edit button:last-of-type {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
 }
 
 .btn-link {
-  color: #007A8A;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.btn-link:hover {
+  color: var(--color-accent-hover);
 }

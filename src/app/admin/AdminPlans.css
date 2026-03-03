@@ -1,3 +1,210 @@
-.admin-plans h1 { margin: 0 0 1rem; }
-.admin-plans table { width: 100%; border-collapse: collapse; }
-.admin-plans th, .admin-plans td { padding: 0.75rem; border-bottom: 1px solid #e5e7eb; }
+.admin-plans {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.admin-plans .admin-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.admin-plans .btn-primary {
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.admin-plans .btn-primary:hover {
+  background: var(--color-accent-hover);
+}
+
+.plans-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.plan-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.plan-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.plan-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.plan-version {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.btn-version {
+  margin-left: auto;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.85rem;
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.btn-version:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.btn-assign {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-assign:hover {
+  background: var(--color-accent-hover);
+}
+
+/* Modal compartido admin */
+.admin-plans .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-6);
+}
+
+.admin-plans .modal-content {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  max-width: 440px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-plans .modal-content h2 {
+  margin: 0 0 var(--space-6);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.admin-plans .form-group {
+  margin-bottom: var(--space-5);
+}
+
+.admin-plans .form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+  font-size: 0.9rem;
+}
+
+.admin-plans .form-group input,
+.admin-plans .form-group select {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.admin-plans .modal-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.admin-plans .modal-actions button {
+  flex: 1;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-plans .modal-actions button[type="button"] {
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.admin-plans .modal-actions button[type="submit"] {
+  background: var(--color-accent);
+  color: white;
+  border: none;
+}
+
+.assign-modal .assignments-list {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.assign-modal .assignments-list strong {
+  display: block;
+  margin-bottom: var(--space-4);
+  font-size: 0.9rem;
+}
+
+.assignment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-2);
+}
+
+.btn-unassign {
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.85rem;
+  background: var(--color-error-muted);
+  color: var(--color-error);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-close {
+  width: 100%;
+  margin-top: var(--space-6);
+  padding: var(--space-3);
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.no-data {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}

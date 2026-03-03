@@ -290,22 +290,22 @@ export function AdminPatientDetailPage() {
         {weightData.length > 0 ? (
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={weightData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,122,138,0.2)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(13,148,136,0.15)" />
               <XAxis dataKey="date" stroke="#888" fontSize={11} />
               <YAxis stroke="#888" fontSize={11} />
               <Tooltip
                 contentStyle={{
                   background: '#fff',
-                  border: '1px solid rgba(0,122,138,0.2)',
+                  border: '1px solid #e7e5e4',
                   borderRadius: '12px'
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="weight"
-                stroke="#007A8A"
+                stroke="#0D9488"
                 strokeWidth={2}
-                dot={{ fill: '#007A8A' }}
+                dot={{ fill: '#0D9488' }}
               />
             </LineChart>
           </ResponsiveContainer>
