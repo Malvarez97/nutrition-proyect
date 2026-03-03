@@ -43,7 +43,8 @@ export function AdminPatientDetailPage() {
   const [selectedWeekDate, setSelectedWeekDate] = useState(null)
   const [editingFeedback, setEditingFeedback] = useState(null)
   const [photoPreview, setPhotoPreview] = useState(null)
-  const [expandedDay, setExpandedDay] = useState(null)
+  const [expandedDays, setExpandedDays] = useState(new Set())
+  const [weekGridExpanded, setWeekGridExpanded] = useState(true)
 
   useEffect(() => {
     if (!user?.id || !id) return
@@ -129,6 +130,19 @@ export function AdminPatientDetailPage() {
       (e) => format(parseISO(e.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
     )
 
+  const toggleDay = (date) => {
+    const key = format(date, 'yyyy-MM-dd')
+    setExpandedDays((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
+  const getMealCountByType = (date, type) =>
+    getEntriesForDay(date).filter((e) => e.meal_type === type).length
+
   const weightDataWithFullDate = [
     ...(weeklyControls || []).map((r) => ({
       date: format(parseISO(r.date), 'd MMM', { locale: es }),
@@ -174,7 +188,15 @@ export function AdminPatientDetailPage() {
       </header>
 
       <section className="panel-section panel-meals-section panel-meals-top">
-        <h2>Calendario de comidas</h2>
+        <button
+          type="button"
+          className="panel-section-toggle"
+          onClick={() => setWeekGridExpanded((v) => !v)}
+          aria-expanded={weekGridExpanded}
+        >
+          <h2>Calendario de comidas</h2>
+          <span className="toggle-icon">{weekGridExpanded ? '▼' : '▶'}</span>
+        </button>
         <div className="panel-week-selector">
           <div className="week-slider">
             <button
@@ -229,60 +251,83 @@ export function AdminPatientDetailPage() {
             />
           )}
         </div>
-        <div className="panel-meals-grid">
-          {weekDates.map((date) => (
-            <div
-              key={date.toISOString()}
-              className={`day-column ${expandedDay && format(expandedDay, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd') ? 'expanded' : ''}`}
-            >
-              <button
-                type="button"
-                className="day-header"
-                onClick={() =>
-                  setExpandedDay((d) =>
-                    d && format(d, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-                      ? null
-                      : date
-                  )
-                }
-              >
-                <span>{format(date, 'EEE', { locale: es })}</span>
-                <span className="day-num">{format(date, 'd')}</span>
-                <span className="day-count">{getEntriesForDay(date).length}</span>
-              </button>
-              {expandedDay &&
-                format(expandedDay, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd') && (
-                  <div className="day-content">
-                    {Object.entries(MEAL_LABELS).map(([type, label]) => (
-                      <div key={type} className="meal-block">
-                        <div className="meal-block-header">
-                          <span>{label}</span>
-                        </div>
-                        <ul>
-                          {getEntriesForDay(date)
-                            .filter((e) => e.meal_type === type)
-                            .map((entry) => (
-                              <li key={entry.id} className="meal-item">
-                                <div className="meal-item-content meal-item-readonly">
-                                  {entry.meal_foods?.map((mf, i) => (
-                                    <span key={mf?.id || i}>
-                                      {mf?.foods?.name || mf?.custom_name} × {mf?.quantity}
-                                    </span>
-                                  ))}
-                                  {entry.emotion && (
-                                    <span className="meal-emotion">{entry.emotion}</span>
-                                  )}
-                                </div>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    ))}
+        {weekGridExpanded && (
+          <div className="panel-meals-cards-grid">
+            {weekDates.map((date) => {
+              const dateKey = format(date, 'yyyy-MM-dd')
+              const isExpanded = expandedDays.has(dateKey)
+              const dayEntries = getEntriesForDay(date)
+              return (
+                <div key={dateKey} className={`day-card ${isExpanded ? 'day-card-expanded' : ''}`}>
+                  <button
+                    type="button"
+                    className="day-card-header"
+                    onClick={() => toggleDay(date)}
+                    aria-expanded={isExpanded}
+                  >
+                    <span className="day-card-title">
+                      {format(date, 'EEE', { locale: es })} {format(date, 'd')}
+                    </span>
+                    <span className="day-card-badge">{dayEntries.length} comidas</span>
+                    <span className="day-card-chevron">{isExpanded ? '▲' : '▼'}</span>
+                  </button>
+                  <div className="day-card-preview">
+                    {['breakfast', 'lunch', 'dinner', 'snack'].map((type) => {
+                      const n = getMealCountByType(date, type)
+                      if (n === 0) return null
+                      const short = { breakfast: 'D', lunch: 'A', dinner: 'C', snack: 'M' }[type]
+                      return <span key={type} className="day-card-chip">{short}: {n}</span>
+                    })}
+                    {dayEntries.length === 0 && (
+                      <span className="day-card-empty">Sin registros</span>
+                    )}
                   </div>
-                )}
-            </div>
-          ))}
-        </div>
+                  {isExpanded && (
+                    <div className="day-card-detail">
+                      {Object.entries(MEAL_LABELS).map(([type, label]) => {
+                        const typeEntries = dayEntries.filter((e) => e.meal_type === type)
+                        return (
+                          <div key={type} className="meal-block">
+                            <div className="meal-block-header">
+                              <span className="meal-block-label">{label}</span>
+                            </div>
+                            <ul className="meal-list">
+                              {typeEntries.map((entry) => (
+                                <li key={entry.id} className="meal-list-item meal-list-item-readonly">
+                                  <div className="meal-list-item-btn">
+                                    <div className="meal-list-foods">
+                                      {(entry.meal_foods || []).map((mf, i) => (
+                                        <div key={mf?.id || i} className="meal-list-food">
+                                          <span className="meal-list-food-name">{mf?.foods?.name || mf?.custom_name || 'Alimento'}</span>
+                                          <span className="meal-list-food-qty">× {mf?.quantity} {mf?.unit || 'g'}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    {(entry.emotion || entry.note) && (
+                                      <div className="meal-list-meta">
+                                        {entry.emotion && <span className="meal-list-emotion">{entry.emotion}</span>}
+                                        {entry.note && <span className="meal-list-note">{entry.note}</span>}
+                                      </div>
+                                    )}
+                                  </div>
+                                </li>
+                              ))}
+                              {typeEntries.length === 0 && (
+                                <li className="meal-list-empty">
+                                  <span className="meal-list-empty-text">Sin registros</span>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
       </section>
 
       <section className="panel-section charts-section">
