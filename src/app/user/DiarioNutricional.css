@@ -1,0 +1,303 @@
+/* Diario Nutricional - mobile-first, touch-friendly */
+:root {
+  --diario-teal: #007A8A;
+  --diario-teal-light: #0099aa;
+  --diario-lime: #C6F65C;
+  --touch-min: 44px;
+}
+
+.diario-page {
+  min-height: 100vh;
+  padding-bottom: 100px; /* espacio para FAB */
+}
+
+.diario-loading {
+  padding: 3rem;
+  text-align: center;
+}
+
+/* Header */
+.diario-header {
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  background: var(--color-bg-card, #fff);
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  z-index: 10;
+}
+
+.diario-header h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  color: var(--color-teal, var(--diario-teal));
+}
+
+.diario-week-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.diario-week-nav button {
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diario-week-nav button:active {
+  background: var(--color-border);
+}
+
+.diario-week-nav span {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.diario-week-nav .btn-today {
+  background: var(--diario-lime);
+  border-color: var(--diario-lime);
+  font-weight: 600;
+}
+
+/* Grid semanal */
+.diario-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  padding: 1rem;
+}
+
+@media (max-width: 600px) {
+  .diario-week {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .diario-week {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Columna día */
+.day-column {
+  background: var(--color-bg);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.day-column.expanded {
+  grid-column: 1 / -1;
+  border-color: var(--diario-teal);
+  box-shadow: 0 2px 12px rgba(0, 122, 138, 0.15);
+}
+
+@media (min-width: 901px) {
+  .day-column.expanded {
+    grid-column: span 1;
+  }
+}
+
+/* Header del día - área táctil grande */
+.day-header {
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.day-header:active {
+  background: rgba(0, 122, 138, 0.06);
+}
+
+.day-header .day-name {
+  flex: 1;
+}
+
+.day-header .day-num {
+  font-weight: 700;
+  color: var(--diario-teal);
+}
+
+.day-header .day-count {
+  background: var(--diario-teal);
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Contenido expandido */
+.day-content {
+  padding: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.meal-block {
+  margin-bottom: 1rem;
+}
+
+.meal-block:last-child {
+  margin-bottom: 0;
+}
+
+.meal-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.meal-block-header span {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-add-small {
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: 0 1rem;
+  background: var(--diario-teal);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-add-small:active {
+  background: var(--diario-teal-light);
+}
+
+.meal-block ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.meal-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.meal-item-content {
+  flex: 1;
+  min-height: var(--touch-min);
+  padding: 0.75rem;
+  text-align: left;
+  background: #f8fbfc;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.meal-item-content:active {
+  border-color: var(--diario-teal);
+}
+
+.meal-emotion {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--diario-teal);
+  margin-top: 0.25rem;
+}
+
+.btn-delete-small {
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: 0;
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* FAB - botón flotante móvil */
+.diario-fab {
+  position: fixed;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 56px;
+  min-width: 200px;
+  padding: 0 1.5rem;
+  background: var(--diario-teal);
+  color: white;
+  border: none;
+  border-radius: 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 122, 138, 0.4);
+  z-index: 50;
+}
+
+.diario-fab:active {
+  transform: translateX(-50%) scale(0.98);
+}
+
+.diario-fab-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.diario-fab-label {
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .diario-fab {
+    left: auto;
+    right: 1.5rem;
+    transform: none;
+    min-width: auto;
+    padding: 0 1.25rem;
+  }
+
+  .diario-fab:active {
+    transform: scale(0.98);
+  }
+
+  .diario-fab-label {
+    display: inline;
+  }
+}

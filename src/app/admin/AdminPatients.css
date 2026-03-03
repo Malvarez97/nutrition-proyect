@@ -1,0 +1,69 @@
+.admin-loading,
+.admin-empty {
+  padding: 2rem;
+  text-align: center;
+}
+
+.admin-empty h2 {
+  margin: 0 0 0.5rem;
+}
+
+.admin-empty .btn-primary {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #007A8A;
+  color: white;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.admin-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-page-header h1 {
+  margin: 0;
+}
+
+.patients-table-wrap {
+  overflow-x: auto;
+}
+
+.patients-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.patients-table th,
+.patients-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.patient-link {
+  font-weight: 600;
+  color: #007A8A;
+}
+
+.compliance-activo { color: #059669; }
+.compliance-regular { color: #d97706; }
+.compliance-bajo { color: #dc2626; }
+
+.notes-preview { cursor: pointer; }
+
+.notes-edit textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-link {
+  color: #007A8A;
+}

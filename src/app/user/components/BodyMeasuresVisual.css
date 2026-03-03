@@ -1,0 +1,33 @@
+.body-measures-visual .measures-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+  .body-measures-visual .measures-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.body-measures-visual .measure-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.body-measures-visual .measure-field label {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.body-measures-visual .measure-field input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.body-measures-visual .measure-value {
+  font-weight: 500;
+}

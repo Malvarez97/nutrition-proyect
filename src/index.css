@@ -1,0 +1,38 @@
+:root {
+  --color-teal: #007A8A;
+  --color-teal-light: #0095a8;
+  --color-teal-dark: #005f6b;
+  --color-lime: #C6F65C;
+  --color-bg: #f0f9fa;
+  --color-bg-card: #ffffff;
+  --color-text: #1a2c2e;
+  --color-text-secondary: #5a6c6d;
+  --color-border: rgba(0, 122, 138, 0.12);
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  font-weight: 500;
+  color: var(--color-teal);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-teal-dark);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
