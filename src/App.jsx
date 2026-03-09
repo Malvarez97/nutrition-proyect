@@ -7,6 +7,7 @@ import { LoginPage } from './app/auth/LoginPage'
 import { UserLayout } from './app/user/UserLayout'
 import { DashboardPage } from './app/user/DashboardPage'
 import { SeguimientoPage } from './app/user/SeguimientoPage'
+import { ControlPage } from './app/user/ControlPage'
 import { PerfilPage } from './app/user/PerfilPage'
 import { AdminLayout } from './app/admin/AdminLayout'
 import { AdminPatientsPage } from './app/admin/AdminPatientsPage'
@@ -32,8 +33,8 @@ function App() {
           >
             <Route index element={<DashboardPage />} />
             <Route path="seguimiento" element={<SeguimientoPage />} />
+            <Route path="control" element={<ControlPage />} />
             <Route path="diario" element={<Navigate to="/app" replace />} />
-            <Route path="control" element={<Navigate to="/app" replace />} />
             <Route path="perfil" element={<PerfilPage />} />
           </Route>
           <Route

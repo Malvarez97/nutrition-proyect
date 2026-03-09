@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useSnackbar } from '../../contexts/SnackbarContext'
 import { mealsService } from '../../services/meals'
 import { bodyMetricsService } from '../../services/bodyMetrics'
 import { weeklyControlsService } from '../../services/weeklyControls'
-import { storageService } from '../../services/storage'
 import {
   LineChart,
   Line,
@@ -17,7 +15,6 @@ import {
 } from 'recharts'
 import { format, parseISO, startOfWeek, addDays, subWeeks } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { BodyMeasuresVisual, MEASURE_KEYS } from './components/BodyMeasuresVisual'
 import './Dashboard.css'
 import './UserPanel.css'
 
@@ -34,26 +31,14 @@ function getWeekDates(weekStart) {
 
 export function SeguimientoPage() {
   const { user, profile } = useAuth()
-  const { showSuccess, showError } = useSnackbar()
+  const { showError } = useSnackbar()
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
 
   const [weightData, setWeightData] = useState([])
   const [weeklyControls, setWeeklyControls] = useState([])
   const [bodyMetrics, setBodyMetrics] = useState([])
   const [selectedWeekDate, setSelectedWeekDate] = useState(null)
   const [allWeekDates, setAllWeekDates] = useState([])
-
-  const [weight, setWeight] = useState('')
-  const [measures, setMeasures] = useState(
-    Object.fromEntries(MEASURE_KEYS.map((k) => [k, '']))
-  )
-  const [frontPhoto, setFrontPhoto] = useState(null)
-  const [sidePhoto, setSidePhoto] = useState(null)
-  const [frontPreview, setFrontPreview] = useState('')
-  const [sidePreview, setSidePreview] = useState('')
-
   const [entries, setEntries] = useState([])
   const [expandedDays, setExpandedDays] = useState(new Set())
   const [weekGridExpanded, setWeekGridExpanded] = useState(true)
@@ -127,23 +112,7 @@ export function SeguimientoPage() {
     if (!user?.id || !activeWeekDate) return
     const load = async () => {
       try {
-        const [wc, bm, entriesData] = await Promise.all([
-          weeklyControlsService.getByWeek(user.id, activeWeekDate),
-          bodyMetricsService.getByWeek(user.id, activeWeekDate),
-          mealsService.getEntriesByDateRange(user.id, weekStartStr, endStr)
-        ])
-        setWeight(wc?.weight?.toString() ?? bm?.weight?.toString() ?? '')
-        setMeasures(
-          bm
-            ? Object.fromEntries(
-                MEASURE_KEYS.map((k) => [k, bm[k]?.toString() ?? ''])
-              )
-            : Object.fromEntries(MEASURE_KEYS.map((k) => [k, '']))
-        )
-        setFrontPreview(wc?.front_photo_url ?? '')
-        setSidePreview(wc?.side_photo_url ?? '')
-        setFrontPhoto(null)
-        setSidePhoto(null)
+        const entriesData = await mealsService.getEntriesByDateRange(user.id, weekStartStr, endStr)
         setEntries(entriesData || [])
       } catch (e) {
         showError(e.message || 'Error al cargar semana')
@@ -158,66 +127,6 @@ export function SeguimientoPage() {
       setExpandedDays((prev) => new Set([...prev, todayStr]))
     }
   }, [activeWeekDate])
-
-  const handlePhotoChange = (type, file) => {
-    if (!file) return
-    const setState = type === 'front' ? setFrontPhoto : setSidePhoto
-    const setPrev = type === 'front' ? setFrontPreview : setSidePreview
-    setState(file)
-    setPrev(URL.createObjectURL(file))
-  }
-
-  const handleSaveControl = async (e) => {
-    e.preventDefault()
-    if (!user?.id) return
-    setSaving(true)
-    setError('')
-    try {
-      let frontUrl = frontPreview
-      let sideUrl = sidePreview
-      if (frontPhoto) {
-        frontUrl = await storageService.uploadWeeklyPhoto(
-          user.id,
-          weekStartStr,
-          'front',
-          frontPhoto
-        )
-      }
-      if (sidePhoto) {
-        sideUrl = await storageService.uploadWeeklyPhoto(
-          user.id,
-          weekStartStr,
-          'side',
-          sidePhoto
-        )
-      }
-      const weightNum = parseFloat(weight) || null
-      const measuresNum = Object.fromEntries(
-        MEASURE_KEYS.map((k) => [k, parseFloat(measures[k]) || null])
-      )
-      await Promise.all([
-        weeklyControlsService.upsert(user.id, weekStartStr, {
-          weight: weightNum,
-          front_photo_url: frontUrl || null,
-          side_photo_url: sideUrl || null
-        }),
-        bodyMetricsService.upsert(user.id, weekStartStr, {
-          weight: weightNum,
-          ...measuresNum
-        })
-      ])
-      showSuccess('Control semanal guardado')
-      setFrontPhoto(null)
-      setSidePhoto(null)
-      weeklyControlsService.getAll(user.id).then(setWeeklyControls)
-      bodyMetricsService.getAll(user.id).then(setBodyMetrics)
-    } catch (err) {
-      setError(err.message || 'Error al guardar')
-      showError(err.message)
-    } finally {
-      setSaving(false)
-    }
-  }
 
   const getEntriesForDay = (date) =>
     entries.filter((e) => format(parseISO(e.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
@@ -381,66 +290,7 @@ export function SeguimientoPage() {
         )}
       </section>
 
-      <section className="panel-section control-week-section">
-        <h2>Control semanal</h2>
-        <form onSubmit={handleSaveControl} className="panel-control-form">
-          {error && <div className="control-error">{error}</div>}
-          <div className="panel-top-row">
-            <div className="panel-photos">
-              <h3>Fotos de la semana</h3>
-              <div className="week-photos-box panel-photos-grid">
-                <div className="photo-box">
-                  <label>Frente</label>
-                  <div className="photo-preview-wrap">
-                    {frontPreview ? (
-                      <button type="button" className="photo-preview-btn" onClick={() => setPhotoPreview({ url: frontPreview, label: 'Frente' })}>
-                        <img src={frontPreview} alt="Frente" />
-                        <span className="week-photo-zoom">🔍</span>
-                      </button>
-                    ) : (
-                      <label className="photo-preview photo-preview-empty">
-                        <span>Sin foto</span>
-                        <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('front', e.target.files?.[0])} className="photo-input-hidden" />
-                      </label>
-                    )}
-                    {frontPreview && <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('front', e.target.files?.[0])} />}
-                  </div>
-                </div>
-                <div className="photo-box">
-                  <label>Perfil</label>
-                  <div className="photo-preview-wrap">
-                    {sidePreview ? (
-                      <button type="button" className="photo-preview-btn" onClick={() => setPhotoPreview({ url: sidePreview, label: 'Perfil' })}>
-                        <img src={sidePreview} alt="Perfil" />
-                        <span className="week-photo-zoom">🔍</span>
-                      </button>
-                    ) : (
-                      <label className="photo-preview photo-preview-empty">
-                        <span>Sin foto</span>
-                        <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('side', e.target.files?.[0])} className="photo-input-hidden" />
-                      </label>
-                    )}
-                    {sidePreview && <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('side', e.target.files?.[0])} />}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="panel-measures">
-              <h3>Medidas (cm)</h3>
-              <BodyMeasuresVisual measures={measures} onChange={setMeasures} />
-            </div>
-          </div>
-          <div className="panel-weight-row">
-            <div className="control-section">
-              <h3>Peso (kg)</h3>
-              <input type="number" step="0.1" min="0" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Ej: 75.5" />
-            </div>
-            <button type="submit" className="btn-save" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
-          </div>
-        </form>
-      </section>
-
-      {weightData.length >= 2 && (
+{weightData.length >= 2 && (
         <section className="panel-section comparison-section">
           <h2>Comparación semana actual vs anterior</h2>
           <WeekComparison weightData={weightData} defaultWeekDate={defaultWeekDate} />
