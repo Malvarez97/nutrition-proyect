@@ -1,0 +1,30 @@
+# Project Architecture Rules
+
+This project follows a feature-based architecture.
+
+src/
+  features/
+  components/
+  hooks/
+  services/
+  lib/
+  types/
+
+Feature structure:
+
+features/<feature>/
+  components/
+  hooks/
+  services/
+  types.ts
+
+Separation of concerns:
+
+components → UI
+hooks → state + logic
+services → Supabase access
+types → models
+lib → utilities
+
+Components must never call Supabase directly.
+All DB calls go through services.

@@ -19,66 +19,49 @@ const EMOTIONS = [
   'Otro'
 ]
 
-export function MealEntryModal({ date, mealType, entry, foods, onSave, onClose }) {
-  const [foodItems, setFoodItems] = useState([])
-  const [emotion, setEmotion] = useState('')
+export function MealEntryModal({ date, mealType: initialMealType, entry, onSave, onClose }) {
+  const [step, setStep] = useState('photo') // 'photo' | 'form'
+  const [mealType, setMealType] = useState(initialMealType || 'breakfast')
   const [note, setNote] = useState('')
+  const [emotion, setEmotion] = useState('')
+  const [photoFile, setPhotoFile] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const [newFoodMode, setNewFoodMode] = useState('select') // 'select' | 'custom'
-  const [selectedFoodId, setSelectedFoodId] = useState('')
-  const [customName, setCustomName] = useState('')
-  const [quantity, setQuantity] = useState(1)
-
   useEffect(() => {
     if (entry) {
-      setEmotion(entry.emotion || '')
+      setMealType(entry.meal_type || initialMealType || 'breakfast')
       setNote(entry.note || '')
-      const items = (entry.meal_foods || []).map((mf) => ({
-        food_id: mf.food_id,
-        custom_name: mf.custom_name,
-        quantity: parseFloat(mf.quantity) || 1,
-        name: mf.foods?.name || mf.custom_name
-      }))
-      setFoodItems(items)
+      setEmotion(entry.emotion || '')
+      setPhotoPreview(entry.photo_url || '')
+      setPhotoFile(null)
+      setStep(entry.photo_url ? 'form' : 'photo')
     } else {
-      setFoodItems([])
-      setEmotion('')
+      setMealType(initialMealType || 'breakfast')
       setNote('')
+      setEmotion('')
+      setPhotoPreview('')
+      setPhotoFile(null)
+      setStep('photo')
     }
-  }, [entry])
+  }, [entry, initialMealType])
 
-  const addFood = () => {
-    if (newFoodMode === 'custom' && customName.trim()) {
-      setFoodItems((prev) => [
-        ...prev,
-        { custom_name: customName.trim(), quantity: Number(quantity) || 1 }
-      ])
-      setCustomName('')
-      setQuantity(1)
-    } else if (newFoodMode === 'select' && selectedFoodId) {
-      const food = foods.find((f) => f.id === selectedFoodId)
-      if (food && !foodItems.some((i) => i.food_id === food.id)) {
-        setFoodItems((prev) => [
-          ...prev,
-          { food_id: food.id, custom_name: null, quantity: Number(quantity) || 1, name: food.name }
-        ])
-        setSelectedFoodId('')
-        setQuantity(1)
-      }
-    }
-  }
-
-  const removeFood = (index) => {
-    setFoodItems((prev) => prev.filter((_, i) => i !== index))
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPhotoFile(file)
+    setPhotoPreview(URL.createObjectURL(file))
+    setStep('form')
+    setError('')
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    if (foodItems.length === 0) {
-      setError('Añadí al menos un alimento')
+    const hasPhoto = !!photoFile || !!photoPreview
+    if (!hasPhoto) {
+      setError('Sacá o elegí una foto primero')
       return
     }
     setLoading(true)
@@ -88,11 +71,7 @@ export function MealEntryModal({ date, mealType, entry, foods, onSave, onClose }
         meal_type: mealType,
         emotion: emotion || null,
         note: note || null,
-        foods: foodItems.map((f) => ({
-          food_id: f.food_id || null,
-          custom_name: f.custom_name || null,
-          quantity: f.quantity
-        }))
+        photo: photoFile || undefined
       }
       await onSave(payload)
       onClose()
@@ -103,14 +82,14 @@ export function MealEntryModal({ date, mealType, entry, foods, onSave, onClose }
     }
   }
 
+  const canSave = (photoFile || photoPreview) && mealType
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content meal-entry-modal-new" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
-          <h2>
-            {entry ? 'Editar' : 'Nueva'} entrada — {MEAL_LABELS[mealType]}
-          </h2>
-          <button className="modal-close" onClick={onClose}>
+          <h2>{entry ? 'Editar comida' : 'Nueva comida'}</h2>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">
             ×
           </button>
         </header>
@@ -118,100 +97,82 @@ export function MealEntryModal({ date, mealType, entry, foods, onSave, onClose }
         <form onSubmit={handleSubmit}>
           {error && <div className="modal-error">{error}</div>}
 
+          {/* Paso 1: Foto (obligatoria) */}
           <div className="modal-section">
-            <label>Alimentos</label>
-            {foodItems.length > 0 && (
-              <ul className="food-list">
-                {foodItems.map((item, i) => (
-                  <li key={i}>
-                    {item.name || item.custom_name} × {item.quantity}
-                    <button type="button" onClick={() => removeFood(i)}>
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <div className="add-food-row">
-              {foods?.length > 0 ? (
-                <>
-                  <select
-                    value={newFoodMode}
-                    onChange={(e) => setNewFoodMode(e.target.value)}
+            <label>Foto (obligatoria)</label>
+            <div className="meal-photo-upload">
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoChange}
+                id="meal-photo-camera"
+                className="meal-photo-input"
+                aria-label="Abrir cámara"
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                id="meal-photo-gallery"
+                className="meal-photo-input"
+                aria-label="Elegir de galería"
+              />
+              {photoPreview ? (
+                <div className="meal-photo-preview-wrap">
+                  <img src={photoPreview} alt="Comida" className="meal-photo-preview" />
+                  <button
+                    type="button"
+                    className="meal-photo-remove"
+                    onClick={() => {
+                      setPhotoFile(null)
+                      setPhotoPreview('')
+                      setStep('photo')
+                    }}
+                    aria-label="Quitar foto"
                   >
-                    <option value="select">Seleccionar alimento</option>
-                    <option value="custom">Personalizado</option>
-                  </select>
-                  {newFoodMode === 'select' ? (
-                    <>
-                      <select
-                        value={selectedFoodId}
-                        onChange={(e) => setSelectedFoodId(e.target.value)}
-                      >
-                        <option value="">Elegir...</option>
-                        {foods.map((f) => (
-                          <option key={f.id} value={f.id}>
-                            {f.name} ({f.calories} kcal)
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        type="number"
-                        min="0.1"
-                        step="0.5"
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
-                        placeholder="Cant."
-                      />
-                      <button type="button" onClick={addFood}>
-                        Añadir
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <input
-                        type="text"
-                        value={customName}
-                        onChange={(e) => setCustomName(e.target.value)}
-                        placeholder="Nombre del alimento"
-                      />
-                      <input
-                        type="number"
-                        min="0.1"
-                        step="0.5"
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
-                        placeholder="Cant."
-                      />
-                      <button type="button" onClick={addFood}>
-                        Añadir
-                      </button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    value={customName}
-                    onChange={(e) => setCustomName(e.target.value)}
-                    placeholder="Nombre del alimento"
-                  />
-                  <input
-                    type="number"
-                    min="0.1"
-                    step="0.5"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                    placeholder="Cant."
-                  />
-                  <button type="button" onClick={addFood}>
-                    Añadir
+                    ×
                   </button>
-                </>
+                </div>
+              ) : (
+                <div className="meal-photo-actions">
+                  <label htmlFor="meal-photo-camera" className="meal-photo-btn meal-photo-btn-camera">
+                    📷 Sacar foto
+                  </label>
+                  <label htmlFor="meal-photo-gallery" className="meal-photo-btn meal-photo-btn-gallery">
+                    🖼️ Elegir de galería
+                  </label>
+                </div>
               )}
             </div>
+          </div>
+
+          {/* Paso 2: Tipo de comida (obligatorio), Notas, Emoción */}
+          <div className="modal-section">
+            <label>Tipo de comida (obligatorio)</label>
+            <select
+              value={mealType}
+              onChange={(e) => setMealType(e.target.value)}
+              className="form-input"
+              required
+            >
+              {Object.entries(MEAL_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="modal-section">
+            <label>Notas</label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Observaciones opcionales..."
+              rows={2}
+              className="form-input"
+            />
           </div>
 
           <div className="modal-section">
@@ -219,31 +180,22 @@ export function MealEntryModal({ date, mealType, entry, foods, onSave, onClose }
             <select
               value={emotion}
               onChange={(e) => setEmotion(e.target.value)}
+              className="form-input"
             >
               <option value="">Seleccionar...</option>
-              {EMOTIONS.map((e) => (
-                <option key={e} value={e}>
-                  {e}
+              {EMOTIONS.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="modal-section">
-            <label>Nota</label>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Observaciones..."
-              rows={2}
-            />
           </div>
 
           <footer className="modal-footer">
             <button type="button" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" disabled={loading}>
+            <button type="submit" disabled={loading || !canSave}>
               {loading ? 'Guardando...' : 'Guardar'}
             </button>
           </footer>

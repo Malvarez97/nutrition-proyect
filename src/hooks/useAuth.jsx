@@ -45,6 +45,7 @@ export function AuthProvider({ children }) {
     profile,
     loading,
     signOut,
+    refreshProfile: () => user?.id && loadProfile(user.id),
     isAuthenticated: !!user,
     ensureProfileExists: async (u) => {
       if (!u?.id) return

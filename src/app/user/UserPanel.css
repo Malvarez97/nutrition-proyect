@@ -276,6 +276,44 @@
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
+.meal-list-photo-thumb {
+  flex-shrink: 0;
+  width: 80px;
+  min-height: 80px;
+  padding: 0;
+  border: none;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-bg);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.meal-list-photo-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.meal-list-photo-zoom {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  opacity: 0;
+  font-size: 1.25rem;
+  transition: opacity 0.15s;
+}
+
+.meal-list-photo-thumb:hover .meal-list-photo-zoom {
+  opacity: 1;
+}
+
 .meal-list-item:hover {
   border-color: var(--color-accent-border);
   box-shadow: var(--shadow-sm);
@@ -308,6 +346,13 @@
   font-size: 0.95rem;
 }
 
+.meal-list-type {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-accent);
+  margin-bottom: var(--space-1);
+}
+
 .meal-list-food-name {
   font-weight: 500;
   color: var(--color-text);
@@ -316,6 +361,16 @@
 .meal-list-food-qty {
   font-size: 0.85rem;
   color: var(--color-text-secondary);
+}
+
+.meal-list-photo-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  cursor: default;
 }
 
 .meal-list-meta {
@@ -662,4 +717,128 @@
   max-height: 80vh;
   object-fit: contain;
   border-radius: var(--radius-sm);
+}
+
+/* Última comida */
+.panel-ultima-comida {
+  scroll-margin-top: var(--space-4);
+}
+
+.ultima-comida-card {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  padding: var(--space-4);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.ultima-comida-photo {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  padding: 0;
+  background: var(--color-surface);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ultima-comida-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ultima-comida-photo-empty {
+  cursor: default;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.ultima-comida-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.ultima-comida-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: baseline;
+  margin-bottom: var(--space-2);
+}
+
+.ultima-comida-type {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.ultima-comida-date {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.ultima-comida-note,
+.ultima-comida-emotion {
+  margin: var(--space-1) 0;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.btn-edit-meal {
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-edit-meal:hover {
+  filter: brightness(1.05);
+}
+
+.ultima-comida-empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+/* CTA control semanal */
+.panel-control-cta {
+  background: linear-gradient(135deg, var(--color-bg-muted) 0%, var(--color-surface) 100%);
+  border: 1px dashed var(--color-border);
+}
+
+.control-cta-text {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.btn-cargar-control {
+  display: inline-block;
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-accent);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.15s;
+}
+
+.btn-cargar-control:hover {
+  filter: brightness(1.05);
+  color: white;
 }

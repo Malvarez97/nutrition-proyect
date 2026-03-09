@@ -1,0 +1,29 @@
+# Performance Rules
+
+Performance is a core priority.
+
+React rendering:
+
+Minimize re-renders.
+Use React.memo, useMemo, useCallback.
+
+Data fetching:
+
+Prefer server filtering rather than client filtering.
+
+Always minimize data transfer.
+
+Never fetch unnecessary fields.
+
+Pagination is mandatory for lists:
+
+.limit()
+.range()
+
+Performance priorities:
+
+1 fewer network requests
+2 less data transferred
+3 fewer renders
+4 server-side processing
+5 simpler client logic

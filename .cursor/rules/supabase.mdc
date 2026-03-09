@@ -1,0 +1,29 @@
+# Supabase Rules
+
+Supabase is the main data layer.
+
+All Supabase calls must live in services.
+
+Example:
+features/cards/services/cards.service.ts
+
+Queries must:
+
+- filter in the database
+- select only needed columns
+- limit results
+
+Example:
+
+supabase
+  .from('cards')
+  .select('id,title,created_at')
+  .eq('user_id', userId)
+  .limit(20)
+
+Realtime should only be used when necessary.
+
+All tables must enforce Row Level Security (RLS).
+
+Never expose the service_role key in the frontend.
+Use only the anon key.

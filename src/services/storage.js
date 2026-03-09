@@ -21,6 +21,14 @@ export const storageService = {
     return this.getPublicUrl(result.path)
   },
 
+  /** Sube foto de una comida (entrada). Path: userId/meals/entryId.ext */
+  async uploadMealPhoto(userId, entryId, file) {
+    const ext = file.name?.split('.').pop()?.toLowerCase() || 'jpg'
+    const path = `${userId}/meals/${entryId}.${ext}`
+    const result = await this.uploadPhoto(file, path)
+    return this.getPublicUrl(result.path)
+  },
+
   getPublicUrl(path) {
     const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path)
     return data.publicUrl

@@ -1,0 +1,20 @@
+# React Best Practices
+
+Use functional components with hooks only.
+
+Reusable logic must live in custom hooks.
+
+Examples:
+useCards()
+useUserProfile()
+useRealtimeCards()
+
+Avoid prop drilling deeper than 2 levels.
+Use context or lightweight state stores.
+
+Components should stay under ~150 lines.
+
+Use optimization tools when necessary:
+React.memo
+useMemo
+useCallback

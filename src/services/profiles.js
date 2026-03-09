@@ -7,7 +7,7 @@ export const profilesService = {
       .update(data)
       .eq('id', userId)
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) throw error
     return result

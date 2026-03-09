@@ -1,0 +1,22 @@
+# Anti Patterns
+
+Avoid the following patterns.
+
+Direct Supabase calls in components.
+
+Bad:
+
+supabase.from('cards').select('*')
+
+Correct:
+
+Use service layer:
+cardsService.getCards()
+
+Avoid fetching entire tables.
+
+Avoid large global state for large collections.
+
+Avoid deep prop drilling.
+
+Split components larger than ~150 lines.

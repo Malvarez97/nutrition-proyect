@@ -1,0 +1,29 @@
+# Supabase Query Optimization
+
+Queries must prioritize efficiency.
+
+Filtering must happen in Supabase.
+
+Bad:
+fetch all rows then filter in JS
+
+Good:
+
+supabase
+  .from('cards')
+  .select('id,title')
+  .eq('user_id', userId)
+
+Never use select('*') unless necessary.
+
+Always limit results.
+
+Example:
+.range(0,20)
+
+Prefer indexed columns:
+id
+user_id
+created_at
+
+Avoid N+1 queries.

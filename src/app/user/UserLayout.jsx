@@ -7,6 +7,7 @@ export function UserLayout() {
 
   const navLinks = [
     { to: '/app', label: 'Panel' },
+    { to: '/app/seguimiento', label: 'Seguimiento' },
     { to: '/app/perfil', label: 'Perfil' }
   ]
 

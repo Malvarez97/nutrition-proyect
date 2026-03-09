@@ -27,3 +27,93 @@
   font-size: 1rem;
   color: var(--color-text);
 }
+
+.perfil-value-readonly {
+  color: var(--color-text-secondary);
+}
+
+.perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.perfil-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.perfil-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+}
+
+.perfil-input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+}
+
+.perfil-save {
+  align-self: flex-start;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.perfil-save:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.perfil-save:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.perfil-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.perfil-edit {
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.perfil-edit:hover {
+  filter: brightness(1.05);
+}
+
+.perfil-cancel {
+  padding: var(--space-3) var(--space-6);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.perfil-cancel:hover {
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+}

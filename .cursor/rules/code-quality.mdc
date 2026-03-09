@@ -1,0 +1,28 @@
+# Code Quality Rules
+
+Use TypeScript everywhere.
+
+Each Supabase entity must have a defined type.
+
+Examples:
+type Card
+type UserProfile
+type CardGroup
+
+Naming conventions:
+
+Components:
+CardItem.tsx
+CardList.tsx
+CardForm.tsx
+
+Hooks:
+useCards.ts
+
+Services:
+cards.service.ts
+
+Before adding libraries ask:
+
+Does this improve performance?
+Does this simplify the code?

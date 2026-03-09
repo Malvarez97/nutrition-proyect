@@ -1,0 +1,18 @@
+# Mobile First UI Rules
+
+Design must start at mobile size (320px).
+
+Principles:
+
+- vertical layouts
+- readable text
+- no horizontal scroll
+- avoid hover-only interactions
+
+Touch targets must be at least 44px.
+
+Mobile screens should prioritize:
+
+- one primary action per screen
+- simple navigation
+- minimal UI complexity

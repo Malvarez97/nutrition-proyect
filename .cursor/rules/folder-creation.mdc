@@ -1,0 +1,24 @@
+# Folder Creation Rules
+
+New features must follow this structure:
+
+features/<feature>/
+  components/
+  hooks/
+  services/
+  types.ts
+
+Feature-specific components belong inside the feature.
+
+Global components go in:
+
+src/components/
+
+Hooks:
+
+Reusable hooks → src/hooks/
+Feature hooks → feature/hooks/
+
+Supabase services always go in:
+
+feature/services/

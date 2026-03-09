@@ -294,19 +294,27 @@ export function AdminPatientDetailPage() {
                             <ul className="meal-list">
                               {typeEntries.map((entry) => (
                                 <li key={entry.id} className="meal-list-item meal-list-item-readonly">
+                                  {entry.photo_url ? (
+                                    <button
+                                      type="button"
+                                      className="meal-list-photo-thumb"
+                                      onClick={() =>
+                                        setPhotoPreview({ url: entry.photo_url, label: 'Foto comida' })
+                                      }
+                                      aria-label="Ver foto"
+                                    >
+                                      <img src={entry.photo_url} alt="Comida" />
+                                      <span className="meal-list-photo-zoom">🔍</span>
+                                    </button>
+                                  ) : (
+                                    <div className="meal-list-photo-thumb meal-list-photo-empty">Sin foto</div>
+                                  )}
                                   <div className="meal-list-item-btn">
-                                    <div className="meal-list-foods">
-                                      {(entry.meal_foods || []).map((mf, i) => (
-                                        <div key={mf?.id || i} className="meal-list-food">
-                                          <span className="meal-list-food-name">{mf?.foods?.name || mf?.custom_name || 'Alimento'}</span>
-                                          <span className="meal-list-food-qty">× {mf?.quantity} {mf?.unit || 'g'}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                    {(entry.emotion || entry.note) && (
+                                    <div className="meal-list-type">{MEAL_LABELS[entry.meal_type] || entry.meal_type}</div>
+                                    {(entry.note || entry.emotion) && (
                                       <div className="meal-list-meta">
-                                        {entry.emotion && <span className="meal-list-emotion">{entry.emotion}</span>}
                                         {entry.note && <span className="meal-list-note">{entry.note}</span>}
+                                        {entry.emotion && <span className="meal-list-emotion">{entry.emotion}</span>}
                                       </div>
                                     )}
                                   </div>
