@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useSnackbar } from '../../contexts/SnackbarContext'
 import { mealsService } from '../../services/meals'
@@ -15,9 +16,11 @@ import {
 } from 'recharts'
 import { format, parseISO, startOfWeek, addDays, subWeeks } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { MealEntryModal } from './components/MealEntryModal'
 import './Dashboard.css'
 import './UserPanel.css'
 
+const MEAL_ORDER = ['breakfast', 'lunch', 'snack', 'dinner'] // Desayuno, Almuerzo, Merienda, Cena
 const MEAL_LABELS = {
   breakfast: 'Desayuno',
   lunch: 'Almuerzo',
@@ -29,9 +32,18 @@ function getWeekDates(weekStart) {
   return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
 }
 
+function inferMealTypeByHour() {
+  const h = new Date().getHours()
+  if (h >= 5 && h < 10) return 'breakfast'
+  if (h >= 10 && h < 14) return 'lunch'
+  if (h >= 14 && h < 19) return 'snack'
+  return 'dinner'
+}
+
 export function SeguimientoPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { user, profile } = useAuth()
-  const { showError } = useSnackbar()
+  const { showSuccess, showError } = useSnackbar()
   const [loading, setLoading] = useState(true)
 
   const [weightData, setWeightData] = useState([])
@@ -41,6 +53,10 @@ export function SeguimientoPage() {
   const [expandedDays, setExpandedDays] = useState(new Set())
   const [weekGridExpanded, setWeekGridExpanded] = useState(true)
   const [photoPreview, setPhotoPreview] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editingEntry, setEditingEntry] = useState(null)
+  const [modalDate, setModalDate] = useState(null)
+  const [modalMealType, setModalMealType] = useState(null)
 
   const objective = profile?.objective || 'weight_loss'
   const defaultWeekDate = format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
@@ -123,6 +139,16 @@ export function SeguimientoPage() {
     }
   }, [activeWeekDate])
 
+  useEffect(() => {
+    if (searchParams.get('add') === '1') {
+      setSearchParams({}, { replace: true })
+      setModalDate(format(new Date(), 'yyyy-MM-dd'))
+      setModalMealType(inferMealTypeByHour())
+      setEditingEntry(null)
+      setModalOpen(true)
+    }
+  }, [searchParams])
+
   const getEntriesForDay = (date) =>
     entries.filter((e) => format(parseISO(e.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
 
@@ -146,6 +172,58 @@ export function SeguimientoPage() {
     if (canNext) setSelectedWeekDate(allWeekDates[activeWeekIndex - 1])
   }
   const goToday = () => setSelectedWeekDate(defaultWeekDate)
+
+  const openEditModal = (entry) => {
+    setEditingEntry(entry)
+    setModalDate(entry.date)
+    setModalMealType(entry.meal_type)
+    setModalOpen(true)
+  }
+
+  const openAddModal = (date, mealType) => {
+    setEditingEntry(null)
+    setModalDate(date)
+    setModalMealType(mealType)
+    setModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setModalOpen(false)
+    setEditingEntry(null)
+    setModalDate(null)
+    setModalMealType(null)
+  }
+
+  const handleSaveMeal = async (payload) => {
+    if (!user?.id) return
+    try {
+      if (editingEntry) {
+        await mealsService.updateEntry(editingEntry.id, payload)
+        showSuccess('Comida actualizada')
+      } else {
+        await mealsService.createEntry(user.id, payload)
+        showSuccess('Comida guardada')
+      }
+      closeModal()
+      const entriesData = await mealsService.getEntriesByDateRange(user.id, weekStartStr, endStr)
+      setEntries(entriesData || [])
+    } catch (e) {
+      showError(e.message || 'Error al guardar')
+      throw e
+    }
+  }
+
+  const handleDeleteMeal = async (entryId) => {
+    if (!confirm('¿Eliminar este registro?')) return
+    try {
+      await mealsService.deleteEntry(entryId)
+      showSuccess('Registro eliminado')
+      const entriesData = await mealsService.getEntriesByDateRange(user.id, weekStartStr, endStr)
+      setEntries(entriesData || [])
+    } catch (e) {
+      showError(e.message)
+    }
+  }
 
   if (loading) return <div className="dashboard-loading">Cargando...</div>
 
@@ -204,10 +282,10 @@ export function SeguimientoPage() {
                     <span className="day-card-chevron">{isExpanded ? '▲' : '▼'}</span>
                   </button>
                   <div className="day-card-preview">
-                    {['breakfast', 'lunch', 'dinner', 'snack'].map((type) => {
+                    {MEAL_ORDER.map((type) => {
                       const n = getMealCountByType(date, type)
                       if (n === 0) return null
-                      const short = { breakfast: 'D', lunch: 'A', dinner: 'C', snack: 'M' }[type]
+                      const short = { breakfast: 'D', lunch: 'A', snack: 'M', dinner: 'C' }[type]
                       return <span key={type} className="day-card-chip">{short}: {n}</span>
                     })}
                     {dayEntries.length === 0 && (
@@ -215,8 +293,9 @@ export function SeguimientoPage() {
                     )}
                   </div>
                   {isExpanded && (
-                    <div className="day-card-detail seguimiento-readonly">
-                      {Object.entries(MEAL_LABELS).map(([type, label]) => {
+                    <div className="day-card-detail">
+                      {MEAL_ORDER.map((type) => {
+                        const label = MEAL_LABELS[type]
                         const typeEntries = dayEntries.filter((e) => e.meal_type === type)
                         return (
                           <div key={type} className="meal-block">
@@ -225,12 +304,12 @@ export function SeguimientoPage() {
                             </div>
                             <ul className="meal-list">
                               {typeEntries.map((entry) => (
-                                <li key={entry.id} className="meal-list-item meal-list-item-readonly">
+                                <li key={entry.id} className="meal-list-item">
                                   {entry.photo_url ? (
                                     <button
                                       type="button"
                                       className="meal-list-photo-thumb"
-                                      onClick={() => setPhotoPreview({ url: entry.photo_url, label: 'Foto comida' })}
+                                      onClick={(e) => { e.stopPropagation(); setPhotoPreview({ url: entry.photo_url, label: 'Foto comida' }) }}
                                       aria-label="Ver foto"
                                     >
                                       <img src={entry.photo_url} alt="Comida" />
@@ -239,7 +318,7 @@ export function SeguimientoPage() {
                                   ) : (
                                     <div className="meal-list-photo-thumb meal-list-photo-empty">Sin foto</div>
                                   )}
-                                  <div className="meal-list-item-btn">
+                                  <button type="button" className="meal-list-item-btn" onClick={() => openEditModal(entry)}>
                                     <div className="meal-list-type">{MEAL_LABELS[entry.meal_type] || entry.meal_type}</div>
                                     {(entry.note || entry.emotion) && (
                                       <div className="meal-list-meta">
@@ -247,7 +326,15 @@ export function SeguimientoPage() {
                                         {entry.emotion && <span className="meal-list-emotion">{entry.emotion}</span>}
                                       </div>
                                     )}
-                                  </div>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn-delete-small"
+                                    onClick={(e) => { e.stopPropagation(); handleDeleteMeal(entry.id) }}
+                                    aria-label="Eliminar"
+                                  >
+                                    ×
+                                  </button>
                                 </li>
                               ))}
                               {typeEntries.length === 0 && (
@@ -290,6 +377,16 @@ export function SeguimientoPage() {
           <h2>Comparación semana actual vs anterior</h2>
           <WeekComparison weightData={weightData} defaultWeekDate={defaultWeekDate} />
         </section>
+      )}
+
+      {modalOpen && (
+        <MealEntryModal
+          date={modalDate}
+          mealType={modalMealType}
+          entry={editingEntry}
+          onSave={handleSaveMeal}
+          onClose={closeModal}
+        />
       )}
 
       {photoPreview && (

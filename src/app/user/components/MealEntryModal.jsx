@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import './MealEntryModal.css'
 
+/* Orden: Desayuno, Almuerzo, Merienda, Cena */
 const MEAL_LABELS = {
   breakfast: 'Desayuno',
   lunch: 'Almuerzo',
-  dinner: 'Cena',
-  snack: 'Merienda'
+  snack: 'Merienda',
+  dinner: 'Cena'
 }
 
 const EMOTIONS = [
@@ -94,13 +95,14 @@ export function MealEntryModal({ date, mealType: initialMealType, entry, onSave,
           </button>
         </header>
 
-        <form onSubmit={handleSubmit}>
-          {error && <div className="modal-error">{error}</div>}
+        <form onSubmit={handleSubmit} className="meal-entry-form">
+          <div className="modal-body">
+            {error && <div className="modal-error">{error}</div>}
 
-          {/* Paso 1: Foto (obligatoria) */}
-          <div className="modal-section">
-            <label>Foto (obligatoria)</label>
-            <div className="meal-photo-upload">
+            {/* 1. Foto (obligatoria) */}
+            <section className="modal-section" aria-labelledby="meal-step-photo">
+              <h3 id="meal-step-photo" className="modal-section-title"><span className="modal-step-num">1</span> Foto (obligatoria)</h3>
+              <div className="meal-photo-upload">
               <input
                 type="file"
                 accept="image/*"
@@ -145,12 +147,12 @@ export function MealEntryModal({ date, mealType: initialMealType, entry, onSave,
                 </div>
               )}
             </div>
-          </div>
+            </section>
 
-          {/* Paso 2: Tipo de comida (obligatorio), Notas, Emoción */}
-          <div className="modal-section">
-            <label>Tipo de comida (obligatorio)</label>
-            <select
+            {/* 2. Tipo de comida */}
+            <section className="modal-section" aria-labelledby="meal-step-type">
+              <h3 id="meal-step-type" className="modal-section-title"><span className="modal-step-num">2</span> Tipo de comida</h3>
+              <select
               value={mealType}
               onChange={(e) => setMealType(e.target.value)}
               className="form-input"
@@ -162,22 +164,24 @@ export function MealEntryModal({ date, mealType: initialMealType, entry, onSave,
                 </option>
               ))}
             </select>
-          </div>
+            </section>
 
-          <div className="modal-section">
-            <label>Notas</label>
-            <textarea
+            {/* 3. Notas */}
+            <section className="modal-section" aria-labelledby="meal-step-notes">
+              <h3 id="meal-step-notes" className="modal-section-title"><span className="modal-step-num">3</span> Notas</h3>
+              <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Observaciones opcionales..."
               rows={2}
               className="form-input"
+              placeholder="Observaciones opcionales..."
             />
-          </div>
+            </section>
 
-          <div className="modal-section">
-            <label>Emoción</label>
-            <select
+            {/* 4. Emoción */}
+            <section className="modal-section" aria-labelledby="meal-step-emotion">
+              <h3 id="meal-step-emotion" className="modal-section-title"><span className="modal-step-num">4</span> Emoción</h3>
+              <select
               value={emotion}
               onChange={(e) => setEmotion(e.target.value)}
               className="form-input"
@@ -189,6 +193,7 @@ export function MealEntryModal({ date, mealType: initialMealType, entry, onSave,
                 </option>
               ))}
             </select>
+            </section>
           </div>
 
           <footer className="modal-footer">

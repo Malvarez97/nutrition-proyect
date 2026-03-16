@@ -40,9 +40,12 @@ export function HomePage() {
         </>
       ) : (
         <>
-          <h1 className="home-brand">
-            Ludimila <span className="home-brand-accent">Nutrición</span>
-          </h1>
+          <div className="home-brand-wrap">
+            <img src="/logo.png" alt="Ludimila Nutrición" className="home-logo" />
+            <h1 className="home-brand">
+              Ludimila <span className="home-brand-accent">Nutrición</span>
+            </h1>
+          </div>
           <p className="home-subtitle">
             Seguimiento nutricional personalizado. Registra comidas, control semanal y feedback profesional.
           </p>

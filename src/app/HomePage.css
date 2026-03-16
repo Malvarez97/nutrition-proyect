@@ -8,6 +8,18 @@
   text-align: center;
 }
 
+.home-brand-wrap {
+  margin-bottom: var(--space-2);
+}
+
+.home-logo {
+  width: 120px;
+  height: auto;
+  margin: 0 auto var(--space-4);
+  display: block;
+  object-fit: contain;
+}
+
 .home-brand {
   font-size: 2rem;
   font-weight: 700;
