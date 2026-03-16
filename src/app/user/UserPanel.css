@@ -595,9 +595,14 @@
 
 .panel-weight-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   gap: var(--space-4);
   margin-bottom: var(--space-4);
+}
+
+.panel-weight-row .control-section {
+  flex-shrink: 0;
 }
 
 .panel-weight-row .control-section input {
@@ -605,6 +610,15 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+}
+
+.panel-weight-row .btn-editar,
+.panel-weight-row .btn-cancelar {
+  margin-left: auto;
+}
+
+.panel-weight-row .btn-cancelar + .btn-save {
+  margin-left: 0;
 }
 
 .btn-save {
@@ -626,6 +640,78 @@
 .btn-save:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-editar {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-editar:hover {
+  background: var(--color-accent-hover);
+}
+
+.btn-cancelar {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-text-muted);
+}
+
+.btn-cancelar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.control-value-readonly {
+  display: block;
+  min-height: 48px;
+  padding: var(--space-2) 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.photo-preview-readonly {
+  cursor: default;
+  pointer-events: none;
+}
+
+.photo-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.photo-replace-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  cursor: pointer;
+  padding: var(--space-1) 0;
+}
+
+.photo-replace-label:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
 }
 
 .control-error {

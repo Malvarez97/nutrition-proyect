@@ -252,31 +252,40 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
-    margin-top: -36px;
+    width: 64px;
+    height: 64px;
+    margin-top: -40px;
     margin-bottom: 0;
     flex-shrink: 0;
     background: var(--color-accent);
     color: white;
     border-radius: 50%;
-    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.4);
+    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.45);
     text-decoration: none;
-    transition: background 0.15s, transform 0.15s;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
   }
 
   .app-footer-fab:active {
-    transform: scale(0.95);
+    transform: scale(0.94);
+    box-shadow: 0 2px 12px rgba(13, 148, 136, 0.35);
   }
 
   .app-footer-fab:hover {
     background: var(--color-accent-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.5);
+  }
+
+  .app-footer-fab:hover .app-footer-fab-icon {
+    color: white;
   }
 
   .app-footer-fab-icon {
-    font-size: 1.75rem;
-    font-weight: 300;
+    font-size: 2rem;
+    font-weight: 200;
     line-height: 1;
+    color: white;
   }
 
   .app-main {

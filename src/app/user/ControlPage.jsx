@@ -28,6 +28,7 @@ export function ControlPage() {
   const [frontPreview, setFrontPreview] = useState('')
   const [sidePreview, setSidePreview] = useState('')
   const [photoPreview, setPhotoPreview] = useState(null)
+  const [editMode, setEditMode] = useState(false)
 
   const objective = profile?.objective || 'weight_loss'
   const defaultWeekDate = format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
@@ -92,6 +93,7 @@ export function ControlPage() {
         setSidePreview(wc?.side_photo_url ?? '')
         setFrontPhoto(null)
         setSidePhoto(null)
+        setEditMode(!wc && !bm)
       } catch (e) {
         showError(e.message || 'Error al cargar semana')
       }
@@ -149,6 +151,7 @@ export function ControlPage() {
       showSuccess('Control semanal guardado')
       setFrontPhoto(null)
       setSidePhoto(null)
+      setEditMode(false)
     } catch (err) {
       setError(err.message || 'Error al guardar')
       showError(err.message)
@@ -164,6 +167,32 @@ export function ControlPage() {
     if (canNext) setSelectedWeekDate(allWeekDates[activeWeekIndex - 1])
   }
   const goToday = () => setSelectedWeekDate(defaultWeekDate)
+
+  const handleCancelEdit = async () => {
+    setEditMode(false)
+    setError('')
+    if (!user?.id || !activeWeekDate) return
+    try {
+      const [wc, bm] = await Promise.all([
+        weeklyControlsService.getByWeek(user.id, activeWeekDate),
+        bodyMetricsService.getByWeek(user.id, activeWeekDate)
+      ])
+      setWeight(wc?.weight?.toString() ?? bm?.weight?.toString() ?? '')
+      setMeasures(
+        bm
+          ? Object.fromEntries(
+              MEASURE_KEYS.map((k) => [k, bm[k]?.toString() ?? ''])
+            )
+          : Object.fromEntries(MEASURE_KEYS.map((k) => [k, '']))
+      )
+      setFrontPreview(wc?.front_photo_url ?? '')
+      setSidePreview(wc?.side_photo_url ?? '')
+      setFrontPhoto(null)
+      setSidePhoto(null)
+    } catch (e) {
+      showError(e.message || 'Error al restaurar')
+    }
+  }
 
   if (loading) return <div className="dashboard-loading">Cargando...</div>
 
@@ -193,7 +222,7 @@ export function ControlPage() {
             <button type="button" className="btn-today" onClick={goToday}>Hoy</button>
           </div>
         </div>
-        <form onSubmit={handleSaveControl} className="panel-control-form">
+        <form onSubmit={handleSaveControl} className={`panel-control-form ${editMode ? 'panel-control-form-edit' : ''}`}>
           {error && <div className="control-error">{error}</div>}
           <div className="panel-top-row">
             <div className="panel-photos">
@@ -203,49 +232,86 @@ export function ControlPage() {
                   <label>Frente</label>
                   <div className="photo-preview-wrap">
                     {frontPreview ? (
-                      <button type="button" className="photo-preview-btn" onClick={() => setPhotoPreview({ url: frontPreview, label: 'Frente' })}>
-                        <img src={frontPreview} alt="Frente" />
-                        <span className="week-photo-zoom">🔍</span>
-                      </button>
-                    ) : (
+                      <div className="photo-preview-wrapper">
+                        <button type="button" className="photo-preview-btn" onClick={() => setPhotoPreview({ url: frontPreview, label: 'Frente' })}>
+                          <img src={frontPreview} alt="Frente" />
+                          <span className="week-photo-zoom">🔍</span>
+                        </button>
+                        {editMode && (
+                          <label className="photo-replace-label">
+                            Cambiar
+                            <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('front', e.target.files?.[0])} className="photo-input-hidden" />
+                          </label>
+                        )}
+                      </div>
+                    ) : editMode ? (
                       <label className="photo-preview photo-preview-empty">
                         <span>Sin foto</span>
                         <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('front', e.target.files?.[0])} className="photo-input-hidden" />
                       </label>
+                    ) : (
+                      <div className="photo-preview photo-preview-empty photo-preview-readonly">
+                        <span>Sin foto</span>
+                      </div>
                     )}
-                    {frontPreview && <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('front', e.target.files?.[0])} />}
                   </div>
                 </div>
                 <div className="photo-box">
                   <label>Perfil</label>
                   <div className="photo-preview-wrap">
                     {sidePreview ? (
-                      <button type="button" className="photo-preview-btn" onClick={() => setPhotoPreview({ url: sidePreview, label: 'Perfil' })}>
-                        <img src={sidePreview} alt="Perfil" />
-                        <span className="week-photo-zoom">🔍</span>
-                      </button>
-                    ) : (
+                      <div className="photo-preview-wrapper">
+                        <button type="button" className="photo-preview-btn" onClick={() => setPhotoPreview({ url: sidePreview, label: 'Perfil' })}>
+                          <img src={sidePreview} alt="Perfil" />
+                          <span className="week-photo-zoom">🔍</span>
+                        </button>
+                        {editMode && (
+                          <label className="photo-replace-label">
+                            Cambiar
+                            <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('side', e.target.files?.[0])} className="photo-input-hidden" />
+                          </label>
+                        )}
+                      </div>
+                    ) : editMode ? (
                       <label className="photo-preview photo-preview-empty">
                         <span>Sin foto</span>
                         <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('side', e.target.files?.[0])} className="photo-input-hidden" />
                       </label>
+                    ) : (
+                      <div className="photo-preview photo-preview-empty photo-preview-readonly">
+                        <span>Sin foto</span>
+                      </div>
                     )}
-                    {sidePreview && <input type="file" accept="image/*" onChange={(e) => handlePhotoChange('side', e.target.files?.[0])} />}
                   </div>
                 </div>
               </div>
             </div>
             <div className="panel-measures">
               <h3>Medidas (cm)</h3>
-              <BodyMeasuresVisual measures={measures} onChange={setMeasures} />
+              <BodyMeasuresVisual measures={measures} onChange={setMeasures} readOnly={!editMode} />
             </div>
           </div>
           <div className="panel-weight-row">
             <div className="control-section">
               <h3>Peso (kg)</h3>
-              <input type="number" step="0.1" min="0" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Ej: 75.5" />
+              {editMode ? (
+                <input type="number" step="0.1" min="0" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Ej: 75.5" />
+              ) : (
+                <span className="control-value-readonly">{weight || '–'}</span>
+              )}
             </div>
-            <button type="submit" className="btn-save" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+            {editMode ? (
+              <>
+                <button type="button" className="btn-cancelar" onClick={handleCancelEdit} disabled={saving}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-save" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+              </>
+            ) : (
+              <button type="button" className="btn-editar" onClick={() => setEditMode(true)}>
+                Editar
+              </button>
+            )}
           </div>
         </form>
       </section>
