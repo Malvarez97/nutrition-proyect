@@ -30,7 +30,6 @@ export const weeklyControlsService = {
 
   async upsert(userId, date, payload) {
     const existing = await this.getByDate(userId, date)
-    const full = { user_id: userId, date, ...payload }
     if (existing) {
       const { data, error } = await supabase
         .from('weekly_controls')

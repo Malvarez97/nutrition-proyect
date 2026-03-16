@@ -93,3 +93,61 @@
 .admin-patient-detail .measure-value {
   font-weight: 500;
 }
+
+.admin-patient-detail .detail-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.admin-crud-toggle {
+  align-self: flex-start;
+}
+
+.admin-patient-crud {
+  margin-bottom: var(--space-6);
+}
+
+.admin-crud-form .admin-crud-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  margin-bottom: var(--space-4);
+}
+
+.admin-crud-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.admin-crud-form input,
+.admin-crud-form select {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+}
+
+.admin-crud-readonly {
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}
+
+.admin-crud-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.admin-patient-detail .btn-secondary {
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}

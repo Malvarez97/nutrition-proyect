@@ -17,9 +17,25 @@ export function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      const { error: err } = await supabase.auth.signInWithPassword({ email, password })
+      const { data: authData, error: err } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
       if (err) throw err
-      navigate(from, { replace: true })
+      const uid = authData?.user?.id
+      let target = from
+      if (uid) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', uid)
+          .maybeSingle()
+        const role = prof?.role || authData.user?.user_metadata?.role || 'user'
+        if (role === 'admin') {
+          target = '/admin/pacientes'
+        }
+      }
+      navigate(target, { replace: true })
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión')
     } finally {

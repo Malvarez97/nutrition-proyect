@@ -1,0 +1,107 @@
+.admin-nuevo-paciente {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.admin-nuevo-subtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  max-width: 42rem;
+}
+
+.admin-nuevo-card {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .admin-nuevo-card {
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+.admin-nuevo-form fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: 0 0 var(--space-4);
+}
+
+.admin-nuevo-form legend {
+  padding: 0 var(--space-2);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.admin-nuevo-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.admin-nuevo-form input,
+.admin-nuevo-form select {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+}
+
+.admin-nuevo-form .req {
+  color: #b91c1c;
+}
+
+.admin-nuevo-form .hint {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.admin-nuevo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.btn-secondary-link {
+  color: var(--color-text-secondary);
+}
+
+.admin-nuevo-aside {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  padding: var(--space-4);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+  align-self: start;
+}
+
+.admin-nuevo-aside strong {
+  color: var(--color-text);
+}
+
+.admin-nuevo-code {
+  font-size: 0.75rem;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.admin-nuevo-paciente .back-link {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+}

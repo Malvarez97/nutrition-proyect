@@ -30,7 +30,6 @@ export const bodyMetricsService = {
 
   async upsert(userId, date, metrics) {
     const existing = await this.getByDate(userId, date)
-    const payload = { user_id: userId, date, ...metrics }
     if (existing) {
       const { data, error } = await supabase
         .from('body_metrics')

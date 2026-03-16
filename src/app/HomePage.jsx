@@ -1,9 +1,21 @@
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import './HomePage.css'
 
 export function HomePage() {
-  const { isAuthenticated, profile } = useAuth()
+  const { isAuthenticated, profile, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="home" style={{ padding: '2rem', textAlign: 'center' }}>
+        Cargando...
+      </div>
+    )
+  }
+
+  if (isAuthenticated && profile?.role === 'admin') {
+    return <Navigate to="/admin/pacientes" replace />
+  }
 
   return (
     <div className="home">
@@ -19,9 +31,9 @@ export function HomePage() {
             <Link to="/app" className="home-btn home-btn-primary">
               Ir a la app
             </Link>
-            {profile?.role === 'professional' && (
-              <Link to="/admin" className="home-btn home-btn-secondary">
-                Panel profesional
+            {(profile?.role === 'professional' || profile?.role === 'admin') && (
+              <Link to="/admin/pacientes" className="home-btn home-btn-secondary">
+                Panel admin
               </Link>
             )}
           </div>

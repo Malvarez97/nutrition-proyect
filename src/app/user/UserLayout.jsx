@@ -1,9 +1,13 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation, Navigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 
 export function UserLayout() {
   const { user, profile, signOut } = useAuth()
   const location = useLocation()
+
+  if (profile?.role === 'admin') {
+    return <Navigate to="/admin/pacientes" replace state={{ from: location }} />
+  }
 
   const navLinks = [
     { to: '/app', label: 'Panel' },

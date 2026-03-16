@@ -26,8 +26,7 @@ export function ProtectedRoute({ children, requiredRole = null }) {
   const userRole = profile?.role || user.user_metadata?.role || 'user'
 
   if (requiredRole === 'admin' || requiredRole === 'professional') {
-    const allowed = ['admin', 'professional'].includes(requiredRole)
-    if (allowed && userRole !== 'admin' && userRole !== 'professional') {
+    if (userRole !== 'admin' && userRole !== 'professional') {
       return <Navigate to="/app" replace />
     }
   }

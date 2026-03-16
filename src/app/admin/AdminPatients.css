@@ -26,6 +26,36 @@
   background: var(--color-accent-hover);
 }
 
+.admin-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+.admin-empty .btn-secondary-outline {
+  display: inline-block;
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.admin-patients-header > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.btn-nuevo-paciente {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 .admin-patients {
   max-width: 1200px;
   margin: 0 auto;

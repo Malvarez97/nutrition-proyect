@@ -20,7 +20,7 @@ const EMOTIONS = [
 ]
 
 export function MealEntryModal({ date, mealType: initialMealType, entry, onSave, onClose }) {
-  const [step, setStep] = useState('photo') // 'photo' | 'form'
+  const [, setStep] = useState('photo') // 'photo' | 'form'
   const [mealType, setMealType] = useState(initialMealType || 'breakfast')
   const [note, setNote] = useState('')
   const [emotion, setEmotion] = useState('')

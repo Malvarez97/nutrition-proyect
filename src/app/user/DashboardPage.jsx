@@ -12,6 +12,13 @@ import { MealEntryModal } from './components/MealEntryModal'
 import './Dashboard.css'
 import './UserPanel.css'
 
+const MEAL_LABELS = {
+  breakfast: 'Desayuno',
+  lunch: 'Almuerzo',
+  dinner: 'Cena',
+  snack: 'Merienda'
+}
+
 function inferMealTypeByHour() {
   const h = new Date().getHours()
   if (h >= 5 && h < 10) return 'breakfast'

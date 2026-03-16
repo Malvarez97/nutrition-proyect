@@ -45,23 +45,53 @@ export function AdminPatientDetailPage() {
   const [photoPreview, setPhotoPreview] = useState(null)
   const [expandedDays, setExpandedDays] = useState(new Set())
   const [weekGridExpanded, setWeekGridExpanded] = useState(true)
+  const [crudOpen, setCrudOpen] = useState(false)
+  const [crudName, setCrudName] = useState('')
+  const [crudAge, setCrudAge] = useState('')
+  const [crudObjective, setCrudObjective] = useState('weight_loss')
+  const [crudTargetWeight, setCrudTargetWeight] = useState('')
+  const [crudDailyCalories, setCrudDailyCalories] = useState('')
+  const [savingCrud, setSavingCrud] = useState(false)
 
   useEffect(() => {
     if (!user?.id || !id) return
-    professionalService
-      .getPatientDetail(user.id, id)
-      .then(setData)
-      .catch((e) => showError(e.message || 'Error al cargar paciente'))
-      .finally(() => setLoading(false))
+    const load = async () => {
+      try {
+        let d = await professionalService.getPatientDetail(user.id, id)
+        if (!d) d = await professionalService.getPatientDetailAdmin(user.id, id)
+        if (!d) {
+          showError('Paciente no encontrado o sin acceso')
+          setData(null)
+        } else {
+          setData(d)
+        }
+      } catch (e) {
+        showError(e.message || 'Error al cargar paciente')
+        setData(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
   }, [user?.id, id])
 
   const refreshData = () =>
     user?.id &&
     id &&
-    professionalService.getPatientDetail(user.id, id).then(setData)
+    (async () => {
+      let d = await professionalService.getPatientDetail(user.id, id)
+      if (!d) d = await professionalService.getPatientDetailAdmin(user.id, id)
+      if (d) setData(d)
+    })()
 
-  if (loading || !data) {
-    return <div className="admin-loading">Cargando...</div>
+  if (loading) return <div className="admin-loading">Cargando...</div>
+  if (!data) {
+    return (
+      <div className="admin-empty">
+        <p>No se pudo cargar el paciente.</p>
+        <Link to="/admin/pacientes" className="btn-primary">Volver al listado</Link>
+      </div>
+    )
   }
 
   const { profile, goals, mealEntries, weeklyControls, bodyMetrics, feedbacks } = data
@@ -170,6 +200,39 @@ export function AdminPatientDetailPage() {
 
   const objective = profile?.objective || 'weight_loss'
 
+  const openCrud = () => {
+    setCrudName(profile?.name ?? '')
+    setCrudAge(profile?.age != null ? String(profile.age) : '')
+    setCrudObjective(profile?.objective || 'weight_loss')
+    setCrudTargetWeight(goals?.target_weight != null ? String(goals.target_weight) : '')
+    setCrudDailyCalories(goals?.daily_calories != null ? String(goals.daily_calories) : '')
+    setCrudOpen(true)
+  }
+
+  const saveCrud = async (e) => {
+    e.preventDefault()
+    if (!user?.id || !id) return
+    setSavingCrud(true)
+    try {
+      await professionalService.updatePatientProfile(user.id, id, {
+        name: crudName.trim() || null,
+        age: crudAge.trim() ? parseInt(crudAge, 10) : null,
+        objective: crudObjective
+      })
+      await professionalService.updatePatientGoals(user.id, id, {
+        target_weight: crudTargetWeight.trim() ? parseFloat(crudTargetWeight) : null,
+        daily_calories: crudDailyCalories.trim() ? parseInt(crudDailyCalories, 10) : null
+      })
+      showSuccess('Datos del paciente guardados')
+      setCrudOpen(false)
+      await refreshData()
+    } catch (err) {
+      showError(err.message || 'No se pudo guardar (revisá permisos RLS en Supabase)')
+    } finally {
+      setSavingCrud(false)
+    }
+  }
+
   return (
     <div className="admin-patient-detail user-panel">
       <header className="panel-header detail-header">
@@ -185,7 +248,56 @@ export function AdminPatientDetailPage() {
                 : 'Mantener peso'}
           </div>
         </div>
+        <button type="button" className="btn-primary admin-crud-toggle" onClick={openCrud}>
+          Editar datos del paciente
+        </button>
       </header>
+
+      {crudOpen && (
+        <section className="panel-section admin-patient-crud">
+          <h2>Datos del paciente (CRUD)</h2>
+          <form onSubmit={saveCrud} className="admin-crud-form">
+            <div className="admin-crud-grid">
+              <label>
+                Email (solo lectura)
+                <input type="text" value={profile?.email || '–'} readOnly className="admin-crud-readonly" />
+              </label>
+              <label>
+                Nombre
+                <input value={crudName} onChange={(e) => setCrudName(e.target.value)} />
+              </label>
+              <label>
+                Edad
+                <input type="number" min={1} max={120} value={crudAge} onChange={(e) => setCrudAge(e.target.value)} />
+              </label>
+              <label>
+                Objetivo nutricional
+                <select value={crudObjective} onChange={(e) => setCrudObjective(e.target.value)}>
+                  <option value="weight_loss">Pérdida de peso</option>
+                  <option value="muscle_gain">Ganancia muscular</option>
+                  <option value="maintenance">Mantener peso</option>
+                </select>
+              </label>
+              <label>
+                Peso objetivo (kg)
+                <input type="number" step="0.1" value={crudTargetWeight} onChange={(e) => setCrudTargetWeight(e.target.value)} />
+              </label>
+              <label>
+                Calorías diarias objetivo
+                <input type="number" value={crudDailyCalories} onChange={(e) => setCrudDailyCalories(e.target.value)} />
+              </label>
+            </div>
+            <div className="admin-crud-actions">
+              <button type="submit" className="btn-primary" disabled={savingCrud}>
+                {savingCrud ? 'Guardando...' : 'Guardar'}
+              </button>
+              <button type="button" className="btn-secondary" onClick={() => setCrudOpen(false)}>
+                Cerrar
+              </button>
+            </div>
+          </form>
+        </section>
+      )}
 
       <section className="panel-section panel-meals-section panel-meals-top">
         <button
@@ -194,7 +306,7 @@ export function AdminPatientDetailPage() {
           onClick={() => setWeekGridExpanded((v) => !v)}
           aria-expanded={weekGridExpanded}
         >
-          <h2>Calendario de comidas</h2>
+          <h2>Calendario semanal (comidas por día)</h2>
           <span className="toggle-icon">{weekGridExpanded ? '▼' : '▶'}</span>
         </button>
         <div className="panel-week-selector">

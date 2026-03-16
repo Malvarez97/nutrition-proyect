@@ -35,8 +35,6 @@ export function SeguimientoPage() {
   const [loading, setLoading] = useState(true)
 
   const [weightData, setWeightData] = useState([])
-  const [weeklyControls, setWeeklyControls] = useState([])
-  const [bodyMetrics, setBodyMetrics] = useState([])
   const [selectedWeekDate, setSelectedWeekDate] = useState(null)
   const [allWeekDates, setAllWeekDates] = useState([])
   const [entries, setEntries] = useState([])
@@ -65,9 +63,6 @@ export function SeguimientoPage() {
           weeklyControlsService.getAll(user.id),
           bodyMetricsService.getAll(user.id)
         ])
-        setWeeklyControls(wc || [])
-        setBodyMetrics(bm || [])
-
         const allWeights = [
           ...(wc || []).map((r) => ({ date: r.date, weight: r.weight })),
           ...(bm || [])

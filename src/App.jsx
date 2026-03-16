@@ -13,6 +13,7 @@ import { AdminLayout } from './app/admin/AdminLayout'
 import { AdminPatientsPage } from './app/admin/AdminPatientsPage'
 import { AdminPatientDetailPage } from './app/admin/AdminPatientDetailPage'
 import { AdminPlansPage } from './app/admin/AdminPlansPage'
+import { AdminNuevoPacientePage } from './app/admin/AdminNuevoPacientePage'
 import './App.css'
 
 function App() {
@@ -45,8 +46,9 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<AdminPatientsPage />} />
+            <Route index element={<Navigate to="/admin/pacientes" replace />} />
             <Route path="pacientes" element={<AdminPatientsPage />} />
+            <Route path="pacientes/nuevo" element={<AdminNuevoPacientePage />} />
             <Route path="pacientes/:id" element={<AdminPatientDetailPage />} />
             <Route path="planes" element={<AdminPlansPage />} />
           </Route>

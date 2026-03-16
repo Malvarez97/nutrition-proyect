@@ -109,20 +109,14 @@ export function DiarioNutricionalPage() {
 
   const handleSave = async (payload) => {
     if (!user?.id) return
-    try {
-      if (editingEntry) {
-        await mealsService.updateEntry(editingEntry.id, payload, payload.foods)
-      } else {
-        await mealsService.createEntry(user.id, payload, payload.foods)
-      }
-      closeModal()
-      const [entriesData] = await Promise.all([
-        mealsService.getEntriesByDateRange(user.id, startStr, endStr)
-      ])
-      setEntries(entriesData)
-    } catch (e) {
-      throw e
+    if (editingEntry) {
+      await mealsService.updateEntry(editingEntry.id, payload, payload.foods)
+    } else {
+      await mealsService.createEntry(user.id, payload, payload.foods)
     }
+    closeModal()
+    const entriesData = await mealsService.getEntriesByDateRange(user.id, startStr, endStr)
+    setEntries(entriesData)
   }
 
   const handleDelete = async (entryId) => {

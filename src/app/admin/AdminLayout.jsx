@@ -6,25 +6,24 @@ export function AdminLayout() {
   const location = useLocation()
 
   const navLinks = [
-    { to: '/admin', label: 'Pacientes' },
-    { to: '/admin/planes', label: 'Planes' }
+    { to: '/admin/pacientes', label: 'Pacientes', match: (p) => p === '/admin' || p.startsWith('/admin/pacientes') },
+    { to: '/admin/planes', label: 'Planes', match: (p) => p.startsWith('/admin/planes') }
   ]
 
-  const isActive = (to) =>
-    location.pathname === to || (to !== '/admin' && location.pathname.startsWith(to))
+  const isActive = (link) => link.match(location.pathname)
 
   return (
     <div className="app-layout">
       <header className="app-header">
-        <Link to="/admin" className="brand">Admin</Link>
+        <Link to="/admin/pacientes" className="brand">Admin</Link>
         <nav>
-          {navLinks.map(({ to, label }) => (
+          {navLinks.map((link) => (
             <Link
-              key={to}
-              to={to}
-              className={`nav-link ${isActive(to) ? 'active' : ''}`}
+              key={link.to}
+              to={link.to}
+              className={`nav-link ${isActive(link) ? 'active' : ''}`}
             >
-              {label}
+              {link.label}
             </Link>
           ))}
         </nav>

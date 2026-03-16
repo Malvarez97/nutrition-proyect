@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { professionalService } from '../../services/professional'
-import { format } from 'date-fns'
 import './AdminPatients.css'
 
 export function AdminPatientsPage() {
@@ -17,7 +16,7 @@ export function AdminPatientsPage() {
   useEffect(() => {
     if (!user?.id) return
     professionalService
-      .getPatients(user.id)
+      .getAllPatients(user.id)
       .then(setPatients)
       .catch(console.error)
       .finally(() => setLoading(false))
@@ -64,19 +63,29 @@ export function AdminPatientsPage() {
       <div className="admin-empty">
         <h2>Sin pacientes</h2>
         <p>
-          Creá un plan y asignalo a usuarios para que aparezcan aquí.
+          No hay usuarios con rol &quot;user&quot; en el sistema. Podés dar de alta el primero desde Nuevo paciente.
         </p>
-        <Link to="/admin/planes" className="btn-primary">
-          Ir a Planes
-        </Link>
+        <div className="admin-empty-actions">
+          <Link to="/admin/pacientes/nuevo" className="btn-primary">
+            Nuevo paciente
+          </Link>
+          <Link to="/admin/planes" className="btn-secondary-outline">
+            Ir a Planes
+          </Link>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="admin-patients">
-      <header className="admin-page-header">
-        <h1>Pacientes</h1>
+      <header className="admin-page-header admin-patients-header">
+        <div>
+          <h1>Pacientes</h1>
+          <Link to="/admin/pacientes/nuevo" className="btn-primary btn-nuevo-paciente">
+            Nuevo paciente
+          </Link>
+        </div>
         <div className="sort-control">
           <label>Ordenar por:</label>
           <select

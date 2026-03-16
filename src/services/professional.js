@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase'
-import { startOfWeek, endOfWeek, format, subWeeks } from 'date-fns'
+import { startOfWeek, endOfWeek, format } from 'date-fns'
 
 export const professionalService = {
   async getPatientDetail(professionalId, userId) {
@@ -93,6 +93,123 @@ export const professionalService = {
       .eq('id', feedbackId)
       .eq('professional_id', professionalId)
     if (error) throw error
+  },
+
+  /** Todos los perfiles con rol user (lista global de pacientes). */
+  async getAllPatients(professionalId) {
+    const { data: profiles, error: pError } = await supabase
+      .from('profiles')
+      .select('id, name, age, objective, email')
+      .eq('role', 'user')
+      .order('name', { ascending: true, nullsFirst: false })
+
+    if (pError) throw pError
+    const list = profiles || []
+    if (list.length === 0) return []
+
+    const userIds = list.map((p) => p.id)
+    const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 })
+    const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 })
+    const startStr = format(weekStart, 'yyyy-MM-dd')
+    const endStr = format(weekEnd, 'yyyy-MM-dd')
+
+    const { data: notes } = await supabase
+      .from('professional_patient_notes')
+      .select('user_id, notes')
+      .eq('professional_id', professionalId)
+
+    const notesMap = Object.fromEntries((notes || []).map((n) => [n.user_id, n.notes]))
+
+    const compliancePromises = userIds.map(async (userId) => {
+      const { data: entries } = await supabase
+        .from('meal_entries')
+        .select('date')
+        .eq('user_id', userId)
+        .gte('date', startStr)
+        .lte('date', endStr)
+      const daysWithRecords = new Set((entries || []).map((e) => e.date))
+      const compliance = Math.round((daysWithRecords.size / 7) * 100)
+      let status = 'bajo'
+      if (compliance >= 70) status = 'activo'
+      else if (compliance >= 40) status = 'regular'
+      return { userId, compliance, status }
+    })
+    const complianceData = await Promise.all(compliancePromises)
+    const complianceMap = Object.fromEntries(
+      complianceData.map((c) => [c.userId, { compliance: c.compliance, status: c.status }])
+    )
+
+    const { data: latestWeights } = await supabase
+      .from('weekly_controls')
+      .select('user_id, weight')
+      .in('user_id', userIds)
+      .order('date', { ascending: false })
+    const weightsByUser = {}
+    for (const row of latestWeights || []) {
+      if (!weightsByUser[row.user_id]) weightsByUser[row.user_id] = row.weight
+    }
+
+    return list.map((p) => ({
+      id: p.id,
+      name: p.name,
+      email: p.email,
+      age: p.age,
+      objective: p.objective,
+      weight: weightsByUser[p.id] ?? null,
+      compliance: complianceMap[p.id]?.compliance ?? 0,
+      status: complianceMap[p.id]?.status ?? 'bajo',
+      notes: notesMap[p.id] ?? null
+    }))
+  },
+
+  /** Detalle del paciente sin exigir plan asignado (admin / seguimiento global). */
+  async getPatientDetailAdmin(professionalId, userId) {
+    const [profile, goals, notes, mealEntries, weeklyControls, bodyMetrics, feedbacks] =
+      await Promise.all([
+        supabase.from('profiles').select('*').eq('id', userId).single(),
+        supabase.from('goals').select('*').eq('user_id', userId).maybeSingle(),
+        supabase
+          .from('professional_patient_notes')
+          .select('notes')
+          .eq('professional_id', professionalId)
+          .eq('user_id', userId)
+          .maybeSingle(),
+        supabase
+          .from('meal_entries')
+          .select(
+            `*, meal_foods ( id, food_id, custom_name, quantity, foods (id, name) )`
+          )
+          .eq('user_id', userId)
+          .order('date', { ascending: false })
+          .limit(400),
+        supabase
+          .from('weekly_controls')
+          .select('*')
+          .eq('user_id', userId)
+          .order('date', { ascending: false }),
+        supabase
+          .from('body_metrics')
+          .select('*')
+          .eq('user_id', userId)
+          .order('date', { ascending: false }),
+        supabase
+          .from('feedbacks')
+          .select('*')
+          .eq('user_id', userId)
+          .order('week_date', { ascending: false })
+      ])
+
+    if (!profile.data || profile.data.role !== 'user') return null
+
+    return {
+      profile: profile.data,
+      goals: goals.data,
+      notes: notes.data?.notes,
+      mealEntries: mealEntries.data || [],
+      weeklyControls: weeklyControls.data || [],
+      bodyMetrics: bodyMetrics.data || [],
+      feedbacks: feedbacks.data || []
+    }
   },
 
   async getPatients(professionalId) {
