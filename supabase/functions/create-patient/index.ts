@@ -27,10 +27,35 @@ serve(async (req) => {
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const admin = createClient(supabaseUrl, serviceKey)
 
-    const jwt = authHeader.replace('Bearer ', '')
-    const { data: authData, error: authErr } = await admin.auth.getUser(jwt)
-    if (authErr || !authData.user) {
-      return new Response(JSON.stringify({ error: 'Sesión inválida' }), {
+    const jwt = authHeader.replace(/^Bearer\s+/i, '').trim()
+    let callerId: string | null = null
+    let authErrMsg: string | null = null
+
+    // 1) Intentar con la API de Auth usando anon key (ANON_KEY tiene prioridad si las dos existen)
+    const anonKey = Deno.env.get('ANON_KEY') || Deno.env.get('SUPABASE_ANON_KEY')
+    if (anonKey) {
+      const authRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+        headers: { Authorization: authHeader, apikey: anonKey }
+      })
+      if (authRes.ok) {
+        const authUser = await authRes.json()
+        callerId = authUser?.id ?? null
+      } else {
+        const body = await authRes.json().catch(() => ({}))
+        authErrMsg = body.msg || body.error_description || body.error || authRes.statusText
+      }
+    }
+
+    // 2) Si no hay anon key o falló, intentar admin.auth.getUser(jwt)
+    if (!callerId) {
+      const { data: authData, error: authErr } = await admin.auth.getUser(jwt)
+      if (authData?.user?.id) callerId = authData.user.id
+      if (authErr && !authErrMsg) authErrMsg = authErr.message
+    }
+
+    if (!callerId) {
+      const message = `Sesión inválida. Cerrá sesión y volvé a entrar. [${authErrMsg || 'Token no válido'}]`
+      return new Response(JSON.stringify({ error: message }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
@@ -39,7 +64,7 @@ serve(async (req) => {
     const { data: staff } = await admin
       .from('profiles')
       .select('role')
-      .eq('id', authData.user.id)
+      .eq('id', callerId)
       .single()
 
     if (!staff || !['professional', 'admin'].includes(staff.role)) {

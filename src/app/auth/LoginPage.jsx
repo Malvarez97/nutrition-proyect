@@ -72,7 +72,7 @@ export function LoginPage() {
               required
             />
           </div>
-          <button type="submit" disabled={loading} className="login-submit">
+          <button type="submit" disabled={loading} className="btn btn-primary login-submit">
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>

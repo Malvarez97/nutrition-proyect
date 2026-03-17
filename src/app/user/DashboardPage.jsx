@@ -195,7 +195,7 @@ export function DashboardPage() {
         <section className="panel-section panel-control-cta">
           <h2>Control semanal</h2>
           <p className="control-cta-text">Esta semana no has cargado datos de control.</p>
-          <Link to="/app/control" className="btn-cargar-control">Cargar control semanal</Link>
+          <Link to="/app/control" className="btn btn-primary btn-cargar-control">Cargar control semanal</Link>
         </section>
       )}
 

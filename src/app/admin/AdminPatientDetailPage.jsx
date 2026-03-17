@@ -89,7 +89,7 @@ export function AdminPatientDetailPage() {
     return (
       <div className="admin-empty">
         <p>No se pudo cargar el paciente.</p>
-        <Link to="/admin/pacientes" className="btn-primary">Volver al listado</Link>
+        <Link to="/admin/pacientes" className="btn btn-secondary">Volver al listado</Link>
       </div>
     )
   }
@@ -248,7 +248,7 @@ export function AdminPatientDetailPage() {
                 : 'Mantener peso'}
           </div>
         </div>
-        <button type="button" className="btn-primary admin-crud-toggle" onClick={openCrud}>
+        <button type="button" className="btn btn-primary admin-crud-toggle" onClick={openCrud}>
           Editar datos del paciente
         </button>
       </header>
@@ -288,10 +288,10 @@ export function AdminPatientDetailPage() {
               </label>
             </div>
             <div className="admin-crud-actions">
-              <button type="submit" className="btn-primary" disabled={savingCrud}>
+              <button type="submit" className="btn btn-primary" disabled={savingCrud}>
                 {savingCrud ? 'Guardando...' : 'Guardar'}
               </button>
-              <button type="button" className="btn-secondary" onClick={() => setCrudOpen(false)}>
+              <button type="button" className="btn btn-secondary" onClick={() => setCrudOpen(false)}>
                 Cerrar
               </button>
             </div>

@@ -107,15 +107,15 @@ export function PerfilPage() {
           <div className="perfil-actions">
             {editing ? (
               <>
-                <button type="button" className="perfil-cancel" onClick={cancelEditing}>
+                <button type="button" className="btn btn-secondary perfil-cancel" onClick={cancelEditing}>
                   Cancelar
                 </button>
-                <button type="submit" className="perfil-save" disabled={saving}>
+                <button type="submit" className="btn btn-primary perfil-save" disabled={saving}>
                   {saving ? 'Guardando...' : 'Guardar'}
                 </button>
               </>
             ) : (
-              <button type="button" className="perfil-edit" onClick={startEditing}>
+              <button type="button" className="btn btn-outline perfil-edit" onClick={startEditing}>
                 Editar
               </button>
             )}

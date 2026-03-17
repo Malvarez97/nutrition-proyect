@@ -6,8 +6,7 @@ export function AdminLayout() {
   const location = useLocation()
 
   const navLinks = [
-    { to: '/admin/pacientes', label: 'Pacientes', match: (p) => p === '/admin' || p.startsWith('/admin/pacientes') },
-    { to: '/admin/planes', label: 'Planes', match: (p) => p.startsWith('/admin/planes') }
+    { to: '/admin/pacientes', label: 'Pacientes', match: (p) => p === '/admin' || p.startsWith('/admin/pacientes') }
   ]
 
   const isActive = (link) => link.match(location.pathname)

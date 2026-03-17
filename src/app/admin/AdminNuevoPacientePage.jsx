@@ -39,7 +39,8 @@ export function AdminNuevoPacientePage() {
       setForm(emptyForm)
       if (result.id) navigate(`/admin/pacientes/${result.id}`)
     } catch (err) {
-      showError(err.message || 'No se pudo crear el paciente')
+      const status = err.status ? ` [${err.status}]` : ''
+      showError(`${err.message || 'No se pudo crear el paciente'}${status}`)
     } finally {
       setSaving(false)
     }
@@ -49,115 +50,127 @@ export function AdminNuevoPacientePage() {
     <div className="admin-nuevo-paciente">
       <header className="admin-page-header">
         <div>
-          <Link to="/admin/pacientes" className="back-link">← Pacientes</Link>
+          <Link to="/admin/pacientes" className="btn btn-secondary btn-back">← Volver a Pacientes</Link>
           <h1>Nuevo paciente</h1>
           <p className="admin-nuevo-subtitle">
-            Creá la cuenta del paciente (email y contraseña). Podrá iniciar sesión en la app con esos datos.
+            Creá la cuenta del paciente. Podrá iniciar sesión en la app con el email y la contraseña que definas.
           </p>
         </div>
       </header>
 
       <div className="card admin-nuevo-card">
         <form onSubmit={handleSubmit} className="admin-nuevo-form">
-          <fieldset>
-            <legend>Acceso a la app</legend>
-            <label>
-              Email <span className="req">*</span>
+          <section className="admin-nuevo-section">
+            <h2 className="admin-nuevo-section-title">Acceso a la app</h2>
+            <div className="form-group">
+              <label htmlFor="nuevo-email">Email <span className="req">*</span></label>
               <input
+                id="nuevo-email"
                 type="email"
                 required
                 autoComplete="off"
+                className="form-input"
                 value={form.email}
                 onChange={(e) => set('email', e.target.value)}
-                placeholder="paciente@email.com"
+                placeholder="paciente@ejemplo.com"
               />
-            </label>
-            <label>
-              Contraseña inicial <span className="req">*</span>
+            </div>
+            <div className="form-group">
+              <label htmlFor="nuevo-password">Contraseña inicial <span className="req">*</span></label>
               <input
+                id="nuevo-password"
                 type="password"
                 required
                 minLength={6}
                 autoComplete="new-password"
+                className="form-input"
                 value={form.password}
                 onChange={(e) => set('password', e.target.value)}
                 placeholder="Mínimo 6 caracteres"
               />
-            </label>
-            <p className="hint">Comunicale al paciente el email y esta contraseña; puede cambiarla después si activás recuperación en Supabase Auth.</p>
-          </fieldset>
+            </div>
+            <p className="admin-nuevo-hint">Comunicá al paciente el email y esta contraseña para que pueda entrar.</p>
+          </section>
 
-          <fieldset>
-            <legend>Datos del perfil</legend>
-            <label>
-              Nombre
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => set('name', e.target.value)}
-                placeholder="Nombre completo"
-              />
-            </label>
-            <label>
-              Edad
-              <input
-                type="number"
-                min={1}
-                max={120}
-                value={form.age}
-                onChange={(e) => set('age', e.target.value)}
-              />
-            </label>
-            <label>
-              Objetivo nutricional
-              <select value={form.objective} onChange={(e) => set('objective', e.target.value)}>
+          <section className="admin-nuevo-section">
+            <h2 className="admin-nuevo-section-title">Datos del perfil</h2>
+            <div className="admin-nuevo-grid">
+              <div className="form-group">
+                <label htmlFor="nuevo-name">Nombre</label>
+                <input
+                  id="nuevo-name"
+                  type="text"
+                  className="form-input"
+                  value={form.name}
+                  onChange={(e) => set('name', e.target.value)}
+                  placeholder="Nombre completo"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="nuevo-age">Edad</label>
+                <input
+                  id="nuevo-age"
+                  type="number"
+                  min={1}
+                  max={120}
+                  className="form-input"
+                  value={form.age}
+                  onChange={(e) => set('age', e.target.value)}
+                  placeholder="Ej: 35"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="nuevo-objective">Objetivo nutricional</label>
+              <select
+                id="nuevo-objective"
+                className="form-input form-select"
+                value={form.objective}
+                onChange={(e) => set('objective', e.target.value)}
+              >
                 <option value="weight_loss">Pérdida de peso</option>
                 <option value="muscle_gain">Ganancia muscular</option>
                 <option value="maintenance">Mantener peso</option>
               </select>
-            </label>
-          </fieldset>
+            </div>
+          </section>
 
-          <fieldset>
-            <legend>Objetivos (opcional)</legend>
-            <label>
-              Peso objetivo (kg)
-              <input
-                type="number"
-                step="0.1"
-                value={form.target_weight}
-                onChange={(e) => set('target_weight', e.target.value)}
-              />
-            </label>
-            <label>
-              Calorías diarias
-              <input
-                type="number"
-                value={form.daily_calories}
-                onChange={(e) => set('daily_calories', e.target.value)}
-              />
-            </label>
-          </fieldset>
+          <section className="admin-nuevo-section">
+            <h2 className="admin-nuevo-section-title">Objetivos (opcional)</h2>
+            <div className="admin-nuevo-grid">
+              <div className="form-group">
+                <label htmlFor="nuevo-target-weight">Peso objetivo (kg)</label>
+                <input
+                  id="nuevo-target-weight"
+                  type="number"
+                  step="0.1"
+                  className="form-input"
+                  value={form.target_weight}
+                  onChange={(e) => set('target_weight', e.target.value)}
+                  placeholder="Ej: 70"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="nuevo-daily-calories">Calorías diarias</label>
+                <input
+                  id="nuevo-daily-calories"
+                  type="number"
+                  className="form-input"
+                  value={form.daily_calories}
+                  onChange={(e) => set('daily_calories', e.target.value)}
+                  placeholder="Ej: 2000"
+                />
+              </div>
+            </div>
+          </section>
 
           <div className="admin-nuevo-actions">
-            <button type="submit" className="btn-primary" disabled={saving}>
+            <button type="submit" className="btn btn-primary" disabled={saving}>
               {saving ? 'Creando…' : 'Crear paciente'}
             </button>
-            <Link to="/admin/pacientes" className="btn-secondary-link">Cancelar</Link>
+            <Link to="/admin/pacientes" className="btn btn-secondary">Cancelar</Link>
           </div>
         </form>
-
-        <aside className="admin-nuevo-aside">
-          <strong>Requisito técnico</strong>
-          <p>
-            El alta se hace con una <strong>Edge Function</strong> en Supabase. Si ves error de red o 404,
-            desplegá la función y volvé a intentar:
-          </p>
-          <pre className="admin-nuevo-code">
-            {`supabase functions deploy create-patient`}
-          </pre>
-          <p className="hint">En el dashboard: Edge Functions → create-patient → Deploy. El service role no se expone al navegador.</p>
-        </aside>
       </div>
     </div>
   )

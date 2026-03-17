@@ -302,13 +302,13 @@ export function ControlPage() {
             </div>
             {editMode ? (
               <>
-                <button type="button" className="btn-cancelar" onClick={handleCancelEdit} disabled={saving}>
+                <button type="button" className="btn btn-cancelar" onClick={handleCancelEdit} disabled={saving}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn-save" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+                <button type="submit" className="btn btn-save" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
               </>
             ) : (
-              <button type="button" className="btn-editar" onClick={() => setEditMode(true)}>
+              <button type="button" className="btn btn-editar" onClick={() => setEditMode(true)}>
                 Editar
               </button>
             )}

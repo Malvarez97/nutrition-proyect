@@ -66,11 +66,8 @@ export function AdminPatientsPage() {
           No hay usuarios con rol &quot;user&quot; en el sistema. Podés dar de alta el primero desde Nuevo paciente.
         </p>
         <div className="admin-empty-actions">
-          <Link to="/admin/pacientes/nuevo" className="btn-primary">
+          <Link to="/admin/pacientes/nuevo" className="btn btn-primary">
             Nuevo paciente
-          </Link>
-          <Link to="/admin/planes" className="btn-secondary-outline">
-            Ir a Planes
           </Link>
         </div>
       </div>
@@ -82,7 +79,7 @@ export function AdminPatientsPage() {
       <header className="admin-page-header admin-patients-header">
         <div>
           <h1>Pacientes</h1>
-          <Link to="/admin/pacientes/nuevo" className="btn-primary btn-nuevo-paciente">
+          <Link to="/admin/pacientes/nuevo" className="btn btn-primary btn-nuevo-paciente">
             Nuevo paciente
           </Link>
         </div>
