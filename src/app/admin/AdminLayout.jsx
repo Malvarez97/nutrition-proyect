@@ -32,9 +32,6 @@ export function AdminLayout() {
         <div className="spacer" />
         <Link to="/app" className="nav-link admin-nav-app">App</Link>
         <div className="admin-header-profile">
-          <span className="admin-user-info" title={profile?.name || user?.email}>
-            {profile?.name || user?.email}
-          </span>
           <button type="button" onClick={signOut} className="btn btn-sm btn-signout">
             Salir
           </button>

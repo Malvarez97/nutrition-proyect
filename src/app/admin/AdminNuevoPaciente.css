@@ -66,6 +66,46 @@
   color: var(--color-error);
 }
 
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrap .form-input {
+  padding-right: 2.8rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: var(--space-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle:hover {
+  color: var(--color-text);
+}
+
+.form-input.input-error {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.input-error-msg {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: 0.85rem;
+  color: var(--color-error);
+}
+
 .admin-nuevo-hint {
   font-size: 0.85rem;
   color: var(--color-text-secondary);

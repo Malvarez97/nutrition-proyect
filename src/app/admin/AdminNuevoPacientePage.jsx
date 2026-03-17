@@ -18,12 +18,21 @@ export function AdminNuevoPacientePage() {
   const { showSuccess, showError } = useSnackbar()
   const navigate = useNavigate()
   const [form, setForm] = useState(emptyForm)
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [saving, setSaving] = useState(false)
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
+  const passwordMismatch = confirmPassword && form.password !== confirmPassword
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (form.password !== confirmPassword) {
+      showError('Las contraseñas no coinciden')
+      return
+    }
     setSaving(true)
     try {
       const result = await createPatientViaEdgeFunction({
@@ -77,17 +86,53 @@ export function AdminNuevoPacientePage() {
             </div>
             <div className="form-group">
               <label htmlFor="nuevo-password">Contraseña inicial <span className="req">*</span></label>
-              <input
-                id="nuevo-password"
-                type="password"
-                required
-                minLength={6}
-                autoComplete="new-password"
-                className="form-input"
-                value={form.password}
-                onChange={(e) => set('password', e.target.value)}
-                placeholder="Mínimo 6 caracteres"
-              />
+              <div className="password-input-wrap">
+                <input
+                  id="nuevo-password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                  className="form-input"
+                  value={form.password}
+                  onChange={(e) => set('password', e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="nuevo-confirm-password">Repetir contraseña <span className="req">*</span></label>
+              <div className="password-input-wrap">
+                <input
+                  id="nuevo-confirm-password"
+                  type={showConfirm ? 'text' : 'password'}
+                  required
+                  autoComplete="new-password"
+                  className={`form-input${passwordMismatch ? ' input-error' : ''}`}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repetí la contraseña"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowConfirm((v) => !v)}
+                  aria-label={showConfirm ? 'Ocultar contraseña' : 'Ver contraseña'}
+                >
+                  {showConfirm ? '🙈' : '👁️'}
+                </button>
+              </div>
+              {passwordMismatch && (
+                <span className="input-error-msg">Las contraseñas no coinciden</span>
+              )}
             </div>
             <p className="admin-nuevo-hint">Comunicá al paciente el email y esta contraseña para que pueda entrar.</p>
           </section>
