@@ -151,3 +151,23 @@
   border-radius: var(--radius-md);
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .admin-patient-detail .detail-header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .admin-patient-detail .admin-crud-form .admin-crud-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-patient-detail .admin-crud-actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-patient-detail .admin-crud-actions .btn {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+}

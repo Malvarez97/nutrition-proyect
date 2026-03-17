@@ -1,5 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import './AdminLayout.css'
 
 export function AdminLayout() {
   const { user, profile, signOut } = useAuth()
@@ -12,10 +13,12 @@ export function AdminLayout() {
   const isActive = (link) => link.match(location.pathname)
 
   return (
-    <div className="app-layout">
-      <header className="app-header">
-        <Link to="/admin/pacientes" className="brand">Admin</Link>
-        <nav>
+    <div className="app-layout admin-layout">
+      <header className="app-header admin-header">
+        <Link to="/admin/pacientes" className="admin-brand">
+          <img src="/logo-header.png" alt="LE Nutrición" className="admin-brand-logo" />
+        </Link>
+        <nav className="admin-nav">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -27,13 +30,17 @@ export function AdminLayout() {
           ))}
         </nav>
         <div className="spacer" />
-        <Link to="/app" className="nav-link">App</Link>
-        <span className="user-info">{profile?.name || user?.email}</span>
-        <button onClick={signOut} className="btn-signout">
-          Salir
-        </button>
+        <Link to="/app" className="nav-link admin-nav-app">App</Link>
+        <div className="admin-header-profile">
+          <span className="admin-user-info" title={profile?.name || user?.email}>
+            {profile?.name || user?.email}
+          </span>
+          <button type="button" onClick={signOut} className="btn btn-sm btn-signout">
+            Salir
+          </button>
+        </div>
       </header>
-      <main className="app-main">
+      <main className="app-main admin-main">
         <Outlet />
       </main>
     </div>

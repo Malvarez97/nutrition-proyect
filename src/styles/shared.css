@@ -59,9 +59,18 @@
   font-size: 0.85rem;
 }
 
-/* Enlaces que parecen botón secundario */
+/* Enlaces que parecen botón */
 a.btn {
   box-sizing: border-box;
+}
+
+a.btn.btn-primary {
+  color: white;
+}
+
+a.btn.btn-primary:hover {
+  color: white;
+  background: var(--color-accent-hover);
 }
 
 /* Inputs */

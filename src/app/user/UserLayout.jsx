@@ -65,11 +65,11 @@ export function UserLayout() {
     <div className="app-layout">
       <header className="app-header">
         <Link to="/app" className="brand brand-with-logo brand-desktop">
-          <img src="/logo-header.png" alt="Ludimila Eyeralde Nutrición" className="brand-logo" />
+          <img src="/logo-header.png" alt="LE Nutrición" className="brand-logo" />
         </Link>
         <div className="app-header-mobile-center">
           <Link to="/app" className="brand brand-with-logo">
-            <img src="/logo-header.png" alt="Ludimila Eyeralde Nutrición" className="brand-logo" />
+            <img src="/logo-header.png" alt="LE Nutrición" className="brand-logo" />
           </Link>
         </div>
         <nav className="app-header-nav">

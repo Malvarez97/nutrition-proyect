@@ -1,8 +1,8 @@
 // Deploy: supabase functions deploy create-patient
-// Secrets: SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY (auto en proyecto Supabase)
+// SUPABASE_URL, SUPABASE_ANON_KEY y SUPABASE_SERVICE_ROLE_KEY son auto-inyectados
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,60 +14,56 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  console.log('[create-patient] Invocación POST')
+
   try {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(JSON.stringify({ error: 'No autorizado' }), {
+      console.log('[create-patient] 401: sin header Authorization Bearer')
+      return new Response(JSON.stringify({ error: 'No autorizado: falta token' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const admin = createClient(supabaseUrl, serviceKey)
 
-    const jwt = authHeader.replace(/^Bearer\s+/i, '').trim()
-    let callerId: string | null = null
-    let authErrMsg: string | null = null
+    console.log('[create-patient] SUPABASE_URL ok:', !!supabaseUrl)
+    console.log('[create-patient] SUPABASE_ANON_KEY ok:', !!anonKey)
+    console.log('[create-patient] SUPABASE_SERVICE_ROLE_KEY ok:', !!serviceKey)
 
-    // 1) Intentar con la API de Auth usando anon key (ANON_KEY tiene prioridad si las dos existen)
-    const anonKey = Deno.env.get('ANON_KEY') || Deno.env.get('SUPABASE_ANON_KEY')
-    if (anonKey) {
-      const authRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
-        headers: { Authorization: authHeader, apikey: anonKey }
-      })
-      if (authRes.ok) {
-        const authUser = await authRes.json()
-        callerId = authUser?.id ?? null
-      } else {
-        const body = await authRes.json().catch(() => ({}))
-        authErrMsg = body.msg || body.error_description || body.error || authRes.statusText
-      }
-    }
+    // Cliente con el JWT del usuario (patrón oficial Supabase Edge Functions)
+    const userClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } }
+    })
 
-    // 2) Si no hay anon key o falló, intentar admin.auth.getUser(jwt)
-    if (!callerId) {
-      const { data: authData, error: authErr } = await admin.auth.getUser(jwt)
-      if (authData?.user?.id) callerId = authData.user.id
-      if (authErr && !authErrMsg) authErrMsg = authErr.message
-    }
+    const { data: { user }, error: userError } = await userClient.auth.getUser()
+    console.log('[create-patient] getUser – id:', user?.id ?? 'null', 'error:', userError?.message ?? 'ninguno')
 
-    if (!callerId) {
-      const message = `Sesión inválida. Cerrá sesión y volvé a entrar. [${authErrMsg || 'Token no válido'}]`
-      return new Response(JSON.stringify({ error: message }), {
+    if (!user?.id) {
+      const msg = userError?.message || 'Token inválido o expirado'
+      console.log('[create-patient] 401:', msg)
+      return new Response(JSON.stringify({ error: `Sesión inválida. Cerrá sesión y volvé a entrar. [${msg}]` }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
-    const { data: staff } = await admin
+    // Cliente admin con service role para operaciones privilegiadas
+    const admin = createClient(supabaseUrl, serviceKey)
+
+    const { data: staff, error: staffError } = await admin
       .from('profiles')
       .select('role')
-      .eq('id', callerId)
+      .eq('id', user.id)
       .single()
 
+    console.log('[create-patient] role del caller:', staff?.role ?? 'sin rol', staffError?.message ?? '')
+
     if (!staff || !['professional', 'admin'].includes(staff.role)) {
+      console.log('[create-patient] 403: rol no permitido:', staff?.role ?? 'sin perfil')
       return new Response(JSON.stringify({ error: 'Solo staff puede crear pacientes' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -98,6 +94,7 @@ serve(async (req) => {
       )
     }
 
+    console.log('[create-patient] Creando usuario:', email)
     const { data: created, error: createErr } = await admin.auth.admin.createUser({
       email,
       password,
@@ -106,6 +103,7 @@ serve(async (req) => {
     })
 
     if (createErr) {
+      console.log('[create-patient] Error createUser:', createErr.message)
       return new Response(JSON.stringify({ error: createErr.message }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -113,6 +111,7 @@ serve(async (req) => {
     }
 
     const userId = created.user.id
+    console.log('[create-patient] Usuario Auth creado:', userId)
 
     await admin.from('profiles').upsert(
       {
@@ -137,11 +136,13 @@ serve(async (req) => {
       )
     }
 
+    console.log('[create-patient] 200 OK – paciente creado:', userId)
     return new Response(
       JSON.stringify({ id: userId, email, message: 'Paciente creado. Ya puede iniciar sesión.' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (e) {
+    console.error('[create-patient] 500:', e?.message ?? e)
     return new Response(JSON.stringify({ error: String(e?.message || e) }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

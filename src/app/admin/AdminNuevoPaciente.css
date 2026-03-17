@@ -85,3 +85,23 @@
 .admin-nuevo-actions .btn-primary {
   min-width: 160px;
 }
+
+@media (max-width: 768px) {
+  .admin-nuevo-paciente {
+    padding: var(--space-3);
+  }
+
+  .admin-nuevo-card {
+    padding: var(--space-4);
+  }
+
+  .admin-nuevo-actions {
+    flex-direction: column;
+  }
+
+  .admin-nuevo-actions .btn,
+  .admin-nuevo-actions .btn-primary {
+    width: 100%;
+    min-width: 0;
+  }
+}

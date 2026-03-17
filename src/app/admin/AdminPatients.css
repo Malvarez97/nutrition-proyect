@@ -28,6 +28,21 @@
 .btn-nuevo-paciente {
   text-decoration: none;
   white-space: nowrap;
+  color: white;
+}
+
+.btn-nuevo-paciente:hover {
+  color: white;
+}
+
+.btn-nuevo-paciente-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35em;
+  font-weight: 300;
+  line-height: 1;
+  opacity: 0.95;
 }
 
 .admin-patients {
@@ -51,67 +66,97 @@
   color: var(--color-text);
 }
 
-.sort-control {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+/* Buscador */
+.patients-search-wrap {
+  margin-bottom: var(--space-4);
 }
 
-.sort-control label {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-}
-
-.sort-control select {
-  padding: var(--space-2) var(--space-3);
+.patients-search-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  font-size: 0.9rem;
+  font-size: 1rem;
   background: var(--color-surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.patients-table-wrap {
-  overflow-x: auto;
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+.patients-search-input::placeholder {
+  color: var(--color-text-muted);
 }
 
-.patients-table {
-  width: 100%;
-  border-collapse: collapse;
+.patients-search-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-muted);
 }
 
-.patients-table th,
-.patients-table td {
+/* Lista de tarjetas (todas las pantallas) */
+.patients-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.patient-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-4);
   padding: var(--space-4);
-  text-align: left;
-  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.patients-table th {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
-  background: var(--color-bg-muted);
+.patient-card:hover {
+  border-color: var(--color-accent-muted);
+  box-shadow: var(--shadow-md);
 }
 
-.patients-table tbody tr:hover {
-  background: var(--color-surface-hover);
+.patient-card-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  background: var(--color-accent-muted);
+  border-radius: var(--radius-md);
 }
 
-.patients-table tbody tr:last-child td {
-  border-bottom: none;
+.patient-card-icon svg {
+  width: 22px;
+  height: 22px;
 }
 
-.patient-link {
+.patient-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.patient-card-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.patient-card-name {
   font-weight: 600;
   color: var(--color-accent);
+  font-size: 1rem;
 }
 
-.patient-link:hover {
-  color: var(--color-accent-hover);
+.patient-card-compliance {
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .compliance-activo {
@@ -126,50 +171,47 @@
   color: var(--color-error);
 }
 
-.notes-preview {
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.notes-edit textarea {
-  width: 100%;
-  padding: var(--space-2);
-  margin-bottom: var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-}
-
-.notes-edit button {
-  padding: var(--space-2) var(--space-3);
-  margin-right: var(--space-2);
+.patient-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
   font-size: 0.85rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
-.notes-edit button:first-of-type {
-  background: var(--color-accent);
-  color: white;
-  border: none;
-}
-
-.notes-edit button:last-of-type {
-  background: transparent;
-  border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
 }
 
-.btn-link {
-  color: var(--color-accent);
-  font-weight: 500;
+.patient-card-notes {
+  margin: var(--space-2) 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
 }
 
-.btn-link:hover {
-  color: var(--color-accent-hover);
+.patients-no-results {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: var(--space-6);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .admin-patients-header > div:first-child {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-patients-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .btn-nuevo-paciente {
+    width: 100%;
+    justify-content: center;
+  }
 }

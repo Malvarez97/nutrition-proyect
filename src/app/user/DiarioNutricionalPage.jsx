@@ -120,7 +120,7 @@ export function DiarioNutricionalPage() {
   }
 
   const handleDelete = async (entryId) => {
-    if (!confirm('¿Eliminar este registro?')) return
+    if (!confirm('¿Estás seguro de que quieres eliminar esta comida?')) return
     try {
       await mealsService.deleteEntry(entryId)
       const [entriesData] = await Promise.all([
